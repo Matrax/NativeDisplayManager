@@ -1,8 +1,12 @@
 // Libs
 #pragma comment (lib, "opengl32.lib")
 
-// Includes
+// W32Display Includes
+#define W32_DISPLAY_OPENGL
 #include "../include/w32_display.hpp"
+
+// GL includes
+#include <gl/GL.h>
 
 // Main
 int main()
@@ -43,7 +47,7 @@ int main()
 		// Update window
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-		display.SwapFrontAndBack();
+		display.SwapFrontAndBack(1);
 
 		// Check window closed
 		if (events.closed == true)

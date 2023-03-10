@@ -1,5 +1,6 @@
 #pragma once
 
+// Only compile on Windows (x32 or x64)
 #if defined(_WIN32) or defined(_WIN64)
 
 // STD includes
@@ -14,14 +15,16 @@
 #endif
 #include <Windows.h>
 
+// WGL Extensions functions pointer and attributes
+#ifdef W32_DISPLAY_OPENGL
+typedef HGLRC(WINAPI* PFNWGLCREATECONTEXTATTRIBSARBPROC) (HDC hDC, HGLRC hShareContext, const int* attribList);
+typedef BOOL(WINAPI* PFNWGLCHOOSEPIXELFORMATARBPROC) (HDC hdc, const int* piAttribIList, const FLOAT* pfAttribFList, UINT nMaxFormats, int* piFormats, UINT* nNumFormats);
+typedef BOOL(WINAPI* PFNWGLSWAPINTERVALEXTPROC) (int interval);
+#endif
+
 namespace W32Display
 {
-	// WGL Extensions functions pointer and attributes
-	typedef HGLRC(WINAPI* PFNWGLCREATECONTEXTATTRIBSARBPROC) (HDC hDC, HGLRC hShareContext, const int* attribList);
-	typedef BOOL(WINAPI* PFNWGLCHOOSEPIXELFORMATARBPROC) (HDC hdc, const int* piAttribIList, const FLOAT* pfAttribFList, UINT nMaxFormats, int* piFormats, UINT* nNumFormats);
-	typedef BOOL(WINAPI* PFNWGLSWAPINTERVALEXTPROC) (int interval);
-
-	// W32DisplayEvent struct -> manage all events of the window
+	// W32DisplayEvent Struct -> manage all events of the window
 	typedef struct W32DisplayEvent
 	{
 		bool resized;
@@ -37,31 +40,36 @@ namespace W32Display
 	{
 		private:
 
-			// Static
-			inline static PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB;
-			inline static PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB;
-			inline static PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT;
-
 			// Attributes
 			#ifdef UNICODE
 			std::wstring m_class_name;
 			#else
 			std::string m_class_name;
 			#endif
+
+			#ifdef W32_DISPLAY_OPENGL
+			HGLRC m_gl_device_context;
+			#endif
+
 			HINSTANCE* m_instance;
 			W32DisplayEvent m_events;
 			MSG m_messages;
 			HDC m_device_context;
-			HGLRC m_gl_device_context;
 			HWND m_handle;
 			bool m_doublebuffered;
 			bool m_loaded;
 
-			// Global instance of the window
-			inline static W32Display* GLOBAL_INSTANCE = nullptr;
+			// Static
+			inline static W32Display * GLOBAL_INSTANCE = nullptr;
+
+			#ifdef W32_DISPLAY_OPENGL
+			inline static PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB = nullptr;
+			inline static PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
+			inline static PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = nullptr;
+			#endif
 
 			// Win32 events process function
-			inline static LRESULT CALLBACK WindowProcessEvent(HWND handle, UINT message, WPARAM wParam, LPARAM lParam)
+			static LRESULT CALLBACK WindowProcessEvent(HWND handle, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				W32Display * display = W32Display::GLOBAL_INSTANCE;
 
@@ -73,9 +81,12 @@ namespace W32Display
 							display->m_events.closed = true;
 							break;
 						case WM_SIZE:
-							if (wParam == SIZE_RESTORED) display->m_events.resized = true;
-							if (wParam == SIZE_MINIMIZED) display->m_events.minimized = true;
-							if (wParam == SIZE_MAXIMIZED) display->m_events.maximized = true;
+							if (wParam == SIZE_RESTORED) 
+								display->m_events.resized = true;
+							if (wParam == SIZE_MINIMIZED) 
+								display->m_events.minimized = true;
+							if (wParam == SIZE_MAXIMIZED) 
+								display->m_events.maximized = true;
 							break;
 						case WM_MOVE:
 							display->m_events.moved = true;
@@ -90,7 +101,8 @@ namespace W32Display
 			}
 
 			// Load WGL extensions needed to create the OpenGL context
-			inline static void LoadWGLExtensions(HINSTANCE * instance)
+			#ifdef W32_DISPLAY_OPENGL
+			static void LoadWGLExtensions(HINSTANCE * instance)
 			{
 				// Fake window
 				HDC fake_device_context = nullptr;
@@ -103,8 +115,6 @@ namespace W32Display
 				fake_window_class.lpszClassName = L"FakeWindow";
 				fake_window_class.lpfnWndProc = W32Display::WindowProcessEvent;
 				fake_window_class.hInstance = *(instance);
-				fake_window_class.cbClsExtra = 0;
-				fake_window_class.cbWndExtra = 0;
 				fake_window_class.cbSize = sizeof(WNDCLASSEX);
 				fake_window_class.hbrBackground = (HBRUSH)(1 + COLOR_WINDOW);
 				fake_window_class.style = CS_OWNDC;
@@ -114,12 +124,12 @@ namespace W32Display
 
 				// Create the fake window
 				fake_handle = CreateWindowEx(0, L"FakeWindow",
-					L"FakeWindow",
-					WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
-					0, 0,
-					1, 1,
-					nullptr, nullptr,
-					*(instance), nullptr);
+											 L"FakeWindow",
+											 WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
+											 0, 0,
+											 1, 1,
+											 nullptr, nullptr,
+											 *(instance), nullptr);
 
 				fake_device_context = GetDC(fake_handle);
 				if (fake_device_context == nullptr)
@@ -148,26 +158,31 @@ namespace W32Display
 					throw std::runtime_error("Can't make the fake OpenGL context !");
 
 				// Get WGL extensions functions
-				W32Display::W32Display::wglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
-				if (*wglChoosePixelFormatARB == nullptr)
-					throw std::runtime_error("Can't get the wglChoosePixelFormatARB function !");
+				if (W32Display::W32Display::wglChoosePixelFormatARB == nullptr
+					|| W32Display::W32Display::wglCreateContextAttribsARB == nullptr
+					|| W32Display::W32Display::wglSwapIntervalEXT == nullptr)
+				{
+					W32Display::W32Display::wglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
+					if (*wglChoosePixelFormatARB == nullptr)
+						throw std::runtime_error("Can't get the wglChoosePixelFormatARB function !");
 
-				W32Display::W32Display::wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
-				if (*wglCreateContextAttribsARB == nullptr)
-					throw std::runtime_error("Can't get the wglCreateContextAttribsARB function !");
+					W32Display::W32Display::wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
+					if (*wglCreateContextAttribsARB == nullptr)
+						throw std::runtime_error("Can't get the wglCreateContextAttribsARB function !");
 
-				W32Display::W32Display::wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
-				if (*wglSwapIntervalEXT == nullptr)
-					throw std::runtime_error("Can't get the wglSwapIntervalEXT function !");
+					W32Display::W32Display::wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
+					if (*wglSwapIntervalEXT == nullptr)
+						throw std::runtime_error("Can't get the wglSwapIntervalEXT function !");
+				}
 
 				// Delete the fake GL context
 				if (wglDeleteContext(fake_gl_device_context) == FALSE)
 					throw std::runtime_error("Can't delete the fake OpenGL Context !");
 
-				// Make the current context null
+				// Remove the current fake OpenGL context
 				wglMakeCurrent(nullptr, nullptr);
 
-				// Delete the fake window
+				// Destroy the fake window
 				if (DestroyWindow(fake_handle) == false)
 					throw std::runtime_error("Can't destroy the fake window !");
 
@@ -175,6 +190,7 @@ namespace W32Display
 				if (UnregisterClass(L"FakeWindow", *(instance)) == 0)
 					throw std::runtime_error("Error on unregister the fake window !");
 			}
+			#endif
 
 		public:
 
@@ -192,7 +208,9 @@ namespace W32Display
 				m_loaded(false),
 				m_handle(nullptr),
 				m_device_context(nullptr),
+				#ifdef W32_DSIPLAY_OPENGL
 				m_gl_device_context(nullptr),
+				#endif
 				m_messages({}),
 				m_doublebuffered(false),
 				m_instance(instance)
@@ -211,12 +229,14 @@ namespace W32Display
 			// Virtual destructor
 			virtual ~W32Display() 
 			{
-				if (this->m_loaded == true)
-					this->Unload();
+				if (m_loaded == true)
+					Unload();
+
+				W32Display::GLOBAL_INSTANCE = nullptr;
 			}
 
 			// Get the global instance
-			inline static W32Display* GetInstance() 
+			static W32Display* GetInstance() 
 			{ 
 				return W32Display::GLOBAL_INSTANCE; 
 			}
@@ -224,22 +244,22 @@ namespace W32Display
 			// Load the window
 			void Load(const std::string_view title, const int width, const int height, const bool visible = false)
 			{
-				if (this->m_loaded == true)
+				if (m_loaded == true)
 					throw std::runtime_error("Can't load a window that is already loaded !");
 
 				// Set window class name (Unicode version or not)
 				#ifdef UNICODE
-				this->m_class_name = std::wstring(title.begin(), title.end());
+				m_class_name = std::wstring(title.begin(), title.end());
 				#else
-				this->m_class_name = std::string(title));
+				m_class_name = std::string(title));
 				#endif
 
 				// Register Win32 class
 				WNDCLASSEX window_class = {};
 				SecureZeroMemory(&window_class, sizeof(WNDCLASSEX));
-				window_class.lpszClassName = this->m_class_name.c_str();
+				window_class.lpszClassName = m_class_name.c_str();
 				window_class.lpfnWndProc = W32Display::WindowProcessEvent;
-				window_class.hInstance = *(this->m_instance);
+				window_class.hInstance = *(m_instance);
 				window_class.cbSize = sizeof(WNDCLASSEX);
 				window_class.hbrBackground = (HBRUSH)(1 + COLOR_WINDOW);
 				window_class.style = CS_OWNDC;
@@ -250,16 +270,16 @@ namespace W32Display
 					throw std::runtime_error("Error on register the windows class !");
 
 				// Create the window
-				this->m_handle = CreateWindowEx(0, this->m_class_name.c_str(), this->m_class_name.c_str(),
+				this->m_handle = CreateWindowEx(0, m_class_name.c_str(), m_class_name.c_str(),
 												WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
 												width, height,
-												nullptr, nullptr, *(this->m_instance), nullptr);
+												nullptr, nullptr, *(m_instance), nullptr);
 
 				if (this->m_handle == nullptr)
 					throw std::runtime_error("Error on create the window !");
 
 				// Get the device context
-				this->m_device_context = GetDC(this->m_handle);
+				this->m_device_context = GetDC(m_handle);
 				if (this->m_device_context == nullptr)
 					throw std::runtime_error("Can't get the device context !");
 
@@ -291,34 +311,37 @@ namespace W32Display
 
 			void SwapFrontAndBack(const int swap_interval) const noexcept
 			{
-				if (this->m_loaded == true && this->m_device_context != nullptr)
+				if (m_loaded == true && m_device_context != nullptr)
 				{
 					// Swap the back and front
-					if(W32Display::W32Display::wglSwapIntervalEXT != nullptr)
+					#ifdef W32_DISPLAY_OPENGL
+					if (W32Display::W32Display::wglSwapIntervalEXT != nullptr)
 						W32Display::W32Display::wglSwapIntervalEXT(swap_interval);
+					wglSwapLayerBuffers(m_device_context, WGL_SWAP_MAIN_PLANE);
+					#else
+					SwapBuffers(m_device_context);
+					#endif
 
-					wglSwapLayerBuffers(this->m_device_context, WGL_SWAP_MAIN_PLANE);
 				}
 			}
 
 			void Unload()
 			{
-				if (this->m_loaded == false)
+				if (m_loaded == false)
 					throw std::runtime_error("Can't unload a window that is already unloaded !");
 
 				// Unregister class
-				if (UnregisterClass(this->m_class_name.c_str(), *(this->m_instance)) == 0)
+				if (UnregisterClass(m_class_name.c_str(), *(m_instance)) == 0)
 					throw std::runtime_error("Error on unregister the window !");
 
-				this->Hide();
-
-				this->m_loaded = false;
+				m_loaded = false;
 			}
 
+			#ifdef W32_DISPLAY_OPENGL
 			void MakeOldOpenGLContext(const bool double_buffer, const int color_bits, const int depth_bits, const int stencil_bits)
 			{
 				// Double buffered ?
-				this->m_doublebuffered = double_buffer;
+				m_doublebuffered = double_buffer;
 
 				// Set pixel format
 				PIXELFORMATDESCRIPTOR pixel_format_descriptor = {};
@@ -334,33 +357,36 @@ namespace W32Display
 				if (double_buffer == true) 
 					pixel_format_descriptor.dwFlags = pixel_format_descriptor.dwFlags | PFD_DOUBLEBUFFER;
 
-				int  pixel_format = ChoosePixelFormat(this->m_device_context, &pixel_format_descriptor);
-				if (SetPixelFormat(this->m_device_context, pixel_format, &pixel_format_descriptor) == FALSE)
+				int  pixel_format = ChoosePixelFormat(m_device_context, &pixel_format_descriptor);
+				if (SetPixelFormat(m_device_context, pixel_format, &pixel_format_descriptor) == FALSE)
 					throw std::runtime_error("Can't set the pixel format !");
 
 				// Create the old GL Context
-				this->m_gl_device_context = wglCreateContext(this->m_device_context);
-				if (this->m_gl_device_context == nullptr)
+				m_gl_device_context = wglCreateContext(m_device_context);
+				if (m_gl_device_context == nullptr)
 					throw std::runtime_error("Can't create the old OpenGL context !");
 
 				// Set the OpenGL context active
-				if (wglMakeCurrent(this->m_device_context, this->m_gl_device_context) == FALSE)
+				if (wglMakeCurrent(m_device_context, m_gl_device_context) == FALSE)
 					throw std::runtime_error("Can't make the old OpenGL context !");
 			}
+			#endif
 
+			#ifdef W32_DISPLAY_OPENGL
 			void MakeOpenGLContext(const int major_version, const int minor_version, const bool double_buffer,
 								   const int color_bits, const int alpha_bits, const int depth_bits, const int stencil_bits,
 								   const bool samples_buffers, const int samples)
 			{
 				// Double buffered ?
-				this->m_doublebuffered = double_buffer;
+				m_doublebuffered = double_buffer;
 
 				// Get the WGL functions
-				this->LoadWGLExtensions(this->m_instance);
+				W32Display::LoadWGLExtensions(this->m_instance);
 				if (W32Display::W32Display::wglChoosePixelFormatARB == nullptr || 
 					W32Display::W32Display::wglCreateContextAttribsARB == nullptr ||
 					W32Display::W32Display::wglSwapIntervalEXT == nullptr)
 					throw std::runtime_error("Can't get the WGL extensions functions !");
+
 
 				// Make good OpenGL context
 				const int pixel_format_attributes[] =
@@ -408,7 +434,9 @@ namespace W32Display
 				if (wglMakeCurrent(this->m_device_context, this->m_gl_device_context) == FALSE)
 					throw std::runtime_error("Can't make the OpenGL context !");
 			}
+			#endif
 
+			#ifdef W32_DISPLAY_OPENGL
 			void DeleteOpenGLContext() const
 			{
 				// Delete the GL context
@@ -421,6 +449,7 @@ namespace W32Display
 				// Make the current context null
 				wglMakeCurrent(nullptr, nullptr);
 			}
+			#endif
 
 			void SetTitle(const std::string_view title)
 			{
@@ -521,10 +550,12 @@ namespace W32Display
 				return this->m_device_context; 
 			}
 
+			#ifdef W32_DISPLAY_OPENGL
 			inline HGLRC GetGLDeviceContext() const noexcept 
 			{ 
 				return this->m_gl_device_context; 
 			}
+			#endif
 
 			inline void Close() const noexcept 
 			{ 
