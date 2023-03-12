@@ -1,9 +1,9 @@
 // Libs
 #pragma comment (lib, "opengl32.lib")
 
-// W32Display Includes
-#define W32_DISPLAY_OPENGL
-#include "../include/w32_display.hpp"
+// NativeDisplayManager includes
+#include "../include/display.hpp"
+
 
 // GL includes
 #include <gl/GL.h>
@@ -11,11 +11,8 @@
 // Main
 int main()
 {
-	// Get Win32 instance
-	HINSTANCE instance = GetModuleHandle(NULL);
-
 	// Window
-	W32Display::W32Display display(&instance);
+	NativeDisplayManager::Display display;
 
 	//Load
 	try {
@@ -29,9 +26,7 @@ int main()
 
 	// Run
 	bool running = true;
-
-	W32Display::W32DisplayEvent events = {};
-
+	NativeDisplayManager::DisplayEvents events = {};
 	while (running == true)
 	{
 		// Get Events
