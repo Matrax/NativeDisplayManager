@@ -4,7 +4,7 @@
 #if defined(_WIN32) or defined(_WIN64)
 #define UNICODE
 
-#include "../include/display.hpp"
+#include "../includes/display.hpp"
 
 namespace NativeDisplayManager
 {

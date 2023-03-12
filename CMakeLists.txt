@@ -8,9 +8,14 @@ project(NativeDisplayManager VERSION 1.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Executable
+# If windows
 if (WIN32)
-    add_library(NativeDisplayManager sources/win32_display_impl.cpp)
+    # Add static library and test executable
+    add_library(NativeDisplayManager STATIC sources/win32_display_impl.cpp)
+    add_executable(NativeDisplayManagerTest sources/win32_display_impl.cpp tests/win32_opengl_test.cpp)
+    # Set static lib and include directory for the test executable
+    target_link_libraries(NativeDisplayManagerTest opengl32.lib NativeDisplayManager)
+    target_include_directories(NativeDisplayManagerTest PUBLIC includes)
 endif (WIN32)
 
 if (UNIX)

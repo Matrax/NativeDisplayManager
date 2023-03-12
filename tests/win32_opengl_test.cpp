@@ -1,9 +1,5 @@
-// Libs
-#pragma comment (lib, "opengl32.lib")
-
 // NativeDisplayManager includes
-#include "../include/display.hpp"
-
+#include <display.hpp>
 
 // GL includes
 #include <gl/GL.h>
