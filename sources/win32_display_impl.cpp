@@ -1,7 +1,7 @@
 #pragma once
 
 // Only compile on Windows (x32 or x64)
-#if defined(_WIN32) or defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64)
 #define UNICODE
 
 #include "../includes/display.hpp"
@@ -222,6 +222,36 @@ namespace NativeDisplayManager
 			Show();
 
 		m_loaded = true;
+	}
+
+	void Display::SetFullScreen(const bool fullscreen)
+	{
+		if(m_loaded == false)
+			throw std::runtime_error("Can't set the display fullscreen if the display is not loaded !");
+
+		if(fullscreen == true)
+		{
+			HMONITOR monitor = MonitorFromWindow(m_handle, MONITOR_DEFAULTTOPRIMARY);
+			if(monitor == nullptr)
+				throw std::runtime_error("Can't get any monitor !");
+
+			MONITORINFOEX monitor_info = {};
+			SecureZeroMemory(&monitor_info, sizeof(MONITORINFOEX));
+			monitor_info.cbSize = sizeof(MONITORINFO);
+			if(GetMonitorInfo(monitor, &monitor_info) == FALSE)
+				throw std::runtime_error("Can't get the primary monitor informations !");
+
+			SetWindowLongPtr(m_handle, GWL_STYLE, WS_POPUP);
+			SetWindowPos(m_handle, HWND_TOPMOST, 0, 0, monitor_info.rcMonitor.right, monitor_info.rcMonitor.bottom, SWP_SHOWWINDOW);
+		} else {
+			SetWindowLongPtr(m_handle, GWL_STYLE, WS_OVERLAPPEDWINDOW);
+			SetWindowPos(m_handle, HWND_BOTTOM, 100, 100, 900, 600, SWP_SHOWWINDOW);
+		}
+	}
+
+	bool Display::HasFocus() const
+	{
+		return GetActiveWindow() == m_handle;
 	}
 
 	// Get the events of the window

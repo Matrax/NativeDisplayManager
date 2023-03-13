@@ -1,7 +1,7 @@
 #pragma once
 
 // Windows includes
-#if defined(_WIN32) or defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64)
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
@@ -10,7 +10,7 @@
 #endif
 
 // Windows typedefs
-#if defined(_WIN32) or defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64)
 typedef HGLRC(WINAPI* PFNWGLCREATECONTEXTATTRIBSARBPROC) (HDC hDC, HGLRC hShareContext, const int* attribList);
 typedef BOOL(WINAPI* PFNWGLCHOOSEPIXELFORMATARBPROC) (HDC hdc, const int* piAttribIList, const FLOAT* pfAttribFList, UINT nMaxFormats, int* piFormats, UINT* nNumFormats);
 typedef BOOL(WINAPI* PFNWGLSWAPINTERVALEXTPROC) (int interval);
@@ -40,7 +40,7 @@ namespace NativeDisplayManager
 		bool m_loaded = false;
 
 		// Attributes on Windows
-		#if defined(_WIN32) or defined(_WIN64)
+		#if defined(_WIN32) || defined(_WIN64)
 		static LRESULT CALLBACK WindowProcessEvent(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
 		inline static PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB = nullptr;
 		inline static PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
@@ -78,7 +78,9 @@ namespace NativeDisplayManager
 		}
 
 		// Methods
+		DisplayEvents& GetEvents() noexcept;
 		void Load(const std::string_view title, const int width, const int height, const bool visible = false);
+		void SetFullScreen(const bool fullscreen);
 		void SwapFrontAndBack(const int swap_interval) const noexcept;
 		void MakeOldOpenGLContext(const bool double_buffer, const int color_bits, const int depth_bits, const int stencil_bits);
 		void MakeOpenGLContext(const int major_version, const int minor_version, const bool double_buffer, const int color_bits, const int alpha_bits, const int depth_bits, const int stencil_bits, const bool samples_buffers, const int samples);
@@ -88,23 +90,22 @@ namespace NativeDisplayManager
 		void SetCursorPositionToCenter();
 		void SetCursorVisible(const bool visible);
 		void Close() const noexcept;
-
 		void Hide() const noexcept;
 		void Show() const noexcept;
 		void SetX(const int x);
 		void SetY(const int y);
 		void SetWidth(const int width);
 		void SetHeight(const int height);
+		bool HasFocus() const;
 		int GetX() const;
 		int GetY() const;
 		int GetWidth() const;
 		int GetHeight() const;
 		void Unload();
-		DisplayEvents& GetEvents() noexcept;
 
 		// Shared methods
 
-		bool IsKeyPressed(unsigned long virtual_key)
+		bool IsKeyPressed(unsigned long virtual_key) const noexcept
 		{
 			for (unsigned long i = 0; i < 32; i++)
 			{
@@ -115,7 +116,7 @@ namespace NativeDisplayManager
 			return false;
 		}
 
-		bool IsKeyReleased(unsigned long virtual_key)
+		bool IsKeyReleased(unsigned long virtual_key) const noexcept
 		{
 			for (unsigned long i = 0; i < 32; i++)
 			{
