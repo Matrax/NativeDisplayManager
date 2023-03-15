@@ -12,11 +12,10 @@ int main()
 
 	//Load
 	try {
-		display.Load("Test", 900, 600);
-		display.MakeOpenGLContext(4, 6, true, 32 ,8, 24, 8, true, 1);
+		display.Load("Test", 900, 600, true);
+		display.MakeOpenGLContext(4, 6, true, 32, 8, 24, 8, false, 0);
 		display.SetTitle((const char *) glGetString(GL_VERSION));
-		display.Show();
-	} catch (const std::exception & exception){
+	} catch (const std::exception & exception) {
 		std::cout << exception.what() << std::endl;
 	}
 
@@ -29,11 +28,16 @@ int main()
 		events = display.GetEvents();
 
 		// Check some events
-		if (events.resized == true) std::cout << "event: resized" << std::endl;
-		if (events.minimized == true) std::cout << "event: minimized" << std::endl;
-		if (events.maximized == true) std::cout << "event: maximized" << std::endl;
-		if (events.moved == true) std::cout << "event: moved" << std::endl;
-		if (events.language_changed == true) std::cout << "event: language changed" << std::endl;
+		if (events.resized == true) 
+			std::cout << "event: resized" << std::endl;
+		if (events.minimized == true) 
+			std::cout << "event: minimized" << std::endl;
+		if (events.maximized == true) 
+			std::cout << "event: maximized" << std::endl;
+		if (events.moved == true) 
+			std::cout << "event: moved" << std::endl;
+		if (events.language_changed == true) 
+			std::cout << "event: language changed" << std::endl;
 
 		// Update window
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -50,7 +54,6 @@ int main()
 
 	// Unload
 	try {
-		display.Hide();
 		display.DeleteOpenGLContext();
 		display.Unload();
 	} catch (const std::exception& exception) {

@@ -3,14 +3,16 @@
 namespace NativeDisplayManager
 {
 	/*
-	* This structure represent all the events managed by a display :
+	* This structure represent all the events happening during the execution by a display, getters for all 
+	* of them are defined in the display class directly, all implementations must use this structure to report 
+	* all the following events :
 	* - mouse and keyboard inputs 
 	* - mouse position and mouse direction
 	* - display resized, minimized, maximized, moved
 	* - display closed
 	* - os languages changed
 	*/
-	using DisplayEvents = struct DisplayEvents
+	struct DisplayEvents
 	{
 		int m_keys_down[32];
 		int m_keys_up[32];

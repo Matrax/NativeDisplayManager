@@ -1,15 +1,18 @@
 #pragma once
 
-// Windows includes
+// Windows only includes
 #if defined(_WIN32) || defined(_WIN64)
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
+#endif
+#ifndef UNICODE
+#define UNICODE
 #endif
 #include <Windows.h>
 #include <windowsx.h>
 #endif
 
-// Windows typedefs
+// Windows only typedefs
 #if defined(_WIN32) || defined(_WIN64)
 typedef HGLRC(WINAPI* PFNWGLCREATECONTEXTATTRIBSARBPROC) (HDC hDC, HGLRC hShareContext, const int* attribList);
 typedef BOOL(WINAPI* PFNWGLCHOOSEPIXELFORMATARBPROC) (HDC hdc, const int* piAttribIList, const FLOAT* pfAttribFList, UINT nMaxFormats, int* piFormats, UINT* nNumFormats);
@@ -29,8 +32,10 @@ namespace NativeDisplayManager
 {
 	/*
 	* This class is a singleton that represent a display. There is no default implementation of this class, 
-	* some methods need to be defined in an other class for each systems, also, some methods are shared by all the OS and are already defined in this header.
-	* Each implementation can set attributes in this class but can be only compiled on these implementations.
+	* some methods need to be defined in an other class for each systems, also, some methods are shared by all the OS 
+	* and are already defined in this header.
+	* Each implementation can set attributes or methods in this class but can be only compiled with these, also this library is designed to report 
+	* error mainly with exceptions.
 	* Here the list of all implementation :
 	* - win32_display_impl.cpp -> implements the Win32 (x32 or x64) version. 
 	*/
@@ -42,15 +47,12 @@ namespace NativeDisplayManager
 		// Global instance
 		inline static Display * GLOBAL_INSTANCE = nullptr;
 
-		// Common attributes
+		// Shared attributes
 		DisplayEvents m_events = {};
 		bool m_loaded = false;
 
-		// Attributes on Windows
+		// Windows only attributes
 		#if defined(_WIN32) || defined(_WIN64)
-		inline static PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB = nullptr;
-		inline static PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
-		inline static PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = nullptr;
 		HWND m_handle = nullptr;
 		MSG m_messages = {};
 		HDC m_device_context = nullptr;
@@ -58,7 +60,14 @@ namespace NativeDisplayManager
 		HINSTANCE m_instance = nullptr;
 		#endif
 
-		// Static functions on Windows
+		// Windows only static attributes 
+		#if defined(_WIN32) || defined(_WIN64)
+		inline static PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB = nullptr;
+		inline static PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
+		inline static PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = nullptr;
+		#endif
+
+		// Windows only static functions
 		#if defined(_WIN32) || defined(_WIN64)
 		static LRESULT CALLBACK WindowProcessEvent(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
 		#endif
@@ -93,6 +102,12 @@ namespace NativeDisplayManager
 
 			GLOBAL_INSTANCE = nullptr;
 		}
+
+		/*
+		* This static function get the global instance.
+		* @return The global instance.
+		*/
+		inline static Display * GetInstance() { return Display::GLOBAL_INSTANCE; }
 
 		/*
 		* This methods must return all the events catched by the display.
@@ -132,6 +147,7 @@ namespace NativeDisplayManager
 
 		/*
 		* This methods create an OpenGL context in an old way.
+		* If the creation of the OpenGL context cannot be done, an exception is thrown.
 		* This methods need to be implemented for each OS.
 		* @param double_buffer Use double buffering.
 		* @param color_bits Number of bits to represent a color on the color buffer.
@@ -142,17 +158,20 @@ namespace NativeDisplayManager
 
 		/*
 		* This methods create an OpenGL context.
+		* If the creation of the OpenGL context cannot be done, an exception is thrown.
 		* This methods need to be implemented for each OS.
 		* @param major_version The OpenGL context major version to load.
 		* @param minor_version The OpenGL context minor version to load.
 		* @param double_buffer Use double buffering.
 		* @param color_bits Number of bits to represent a color on the color buffer.
+		* @param alpha_bits Number of bits to represent the alpha channel on the color buffer.
 		* @param depth_bits Number of bits to represent a data on the depth buffer.
-		* @param depth_bits Number of bits to represent a data on the stencil buffer.
+		* @param stencil_bits Number of bits to represent a data on the stencil buffer.
 		* @param samples_buffers Use samples in the buffers.
 		* @param samples Number of samples.
 		*/
-		void MakeOpenGLContext(const int major_version, const int minor_version, const bool double_buffer, const int color_bits, const int depth_bits, const int stencil_bits, const bool samples_buffers, const int samples);
+		void MakeOpenGLContext(const int major_version, const int minor_version, const bool double_buffer, const int color_bits, 
+							   const int alpha_bits, const int depth_bits, const int stencil_bits, const bool samples_buffers, const int samples);
 		
 		/*
 		* This methods delete the current OpenGL context.
@@ -199,7 +218,7 @@ namespace NativeDisplayManager
 		* This methods destroy the display on the screen.
 		* This methods need to be implemented for each OS.
 		*/
-		void Close() const noexcept;
+		void Close() const;
 
 		/*
 		* This methods set the display x position on the screen.
@@ -295,28 +314,75 @@ namespace NativeDisplayManager
 		}
 
 		/*
-		* This methods check if the left mouse button is pressed (managed by the )
+		* This methods check if the left mouse button is pressed.
 		* @return If the left mouse button is pressed.
 		*/
 		inline bool IsLeftMouseButtonPressed() const noexcept { return m_events.left_mouse_pressed; }
 
 		/*
-		* This methods check if the left mouse button is pressed.
-		* @return If the left mouse button is pressed.
+		* This methods check if the left mouse button is released.
+		* @return If the left mouse button is released.
 		*/
 		inline bool IsLeftMouseButtonReleased() const noexcept { return m_events.left_mouse_released; }
 
+		/*
+		* This methods check if the right mouse button is pressed.
+		* @return If the right mouse button is pressed.
+		*/
 		inline bool IsRightMouseButtonPressed() const noexcept { return m_events.right_mouse_pressed; }
+
+		/*
+		* This methods check if the right mouse button is released.
+		* @return If the right mouse button is released.
+		*/
 		inline bool IsRightMouseButtonReleased() const noexcept { return m_events.right_mouse_released; }
+
+		/*
+		* This methods check if the middle mouse button is pressed.
+		* @return If the middle mouse button is pressed.
+		*/
 		inline bool IsMiddleMouseButtonPressed() const noexcept { return m_events.middle_mouse_pressed; }
+
+		/*
+		* This methods check if the middle mouse button is released.
+		* @return If the middle mouse button is released.
+		*/
 		inline bool IsMiddleMouseButtonReleased() const noexcept { return m_events.middle_mouse_released; }
+
+		/*
+		* This methods get the x mouse direction.
+		* @return The x mouse direction.
+		*/
 		inline int GetMouseDirectionX() const noexcept { return m_events.mouse_direction_x; }
+
+		/*
+		* This methods get the y mouse direction.
+		* @return The y mouse direction.
+		*/
 		inline int GetMouseDirectionY() const noexcept { return m_events.mouse_direction_y; }
+		
+		/*
+		* This methods get the x mouse position.
+		* @return The x mouse position.
+		*/
 		inline int GetMouseX() const noexcept { return m_events.mouse_x; }
+		
+		/*
+		* This methods get the y mouse position.
+		* @return The y mouse position.
+		*/
 		inline int GetMouseY() const noexcept { return m_events.mouse_y; }
 
-		// Shared functions
-		inline static Display * GetInstance() { return Display::GLOBAL_INSTANCE; }
+		// Windows only methods
+		#if defined(_WIN32) || defined(_WIN64)
 
+		/*
+		* This methods get the handle of the display.
+		* This methods is only compiled on Windows.
+		* @return The y mouse position.
+		*/
+		inline HWND GetHandle() const noexcept { return m_handle; }
+
+		#endif
 	};
 }

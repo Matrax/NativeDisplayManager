@@ -2,8 +2,8 @@
 
 // Only compile on Windows (x32 or x64)
 #if defined(_WIN32) || defined(_WIN64)
-#define UNICODE
 
+// NativeDisplayManager includes
 #include "../includes/display.hpp"
 
 namespace NativeDisplayManager
@@ -61,33 +61,20 @@ namespace NativeDisplayManager
 		{
 			bool already_pressed = false;
 			// Check if the key is already in the array
-			for (unsigned long i = 0; i < 32; i++)
+			for (unsigned long i = 0; i < 32  && already_pressed == false; i++)
 			{
 				if (display->m_events.m_keys_down[i] == static_cast<int>(wParam))
-				{
 					already_pressed = true;
-					break;
-				}
 			}
-			// If not, we add the key
+			// If not, we add the key and remove from the keys up array
 			if (already_pressed == false)
 			{
 				for (unsigned long i = 0; i < 32; i++)
 				{
 					if (display->m_events.m_keys_down[i] == 0)
-					{
 						display->m_events.m_keys_down[i] = static_cast<int>(wParam);
-						break;
-					}
-				}
-			}
-			// We remove the key from the keys up array
-			for (unsigned long i = 0; i < 32; i++)
-			{
-				if (display->m_events.m_keys_up[i] == static_cast<int>(wParam))
-				{
-					display->m_events.m_keys_up[i] = 0;
-					break;
+					if (display->m_events.m_keys_up[i] == static_cast<int>(wParam))
+						display->m_events.m_keys_up[i] = 0;
 				}
 			}
 			return DefWindowProc(handle, message, wParam, lParam);
@@ -97,33 +84,20 @@ namespace NativeDisplayManager
 		{
 			bool already_released = false;
 			// Check if the key is already in the array
-			for (unsigned long i = 0; i < 32; i++)
+			for (unsigned long i = 0; i < 32 && already_released == false; i++)
 			{
 				if (display->m_events.m_keys_up[i] == static_cast<int>(wParam))
-				{
 					already_released = true;
-					break;
-				}
 			}
-			// If not, we add the key
+			// If not, we add the key and remove from the keys down array
 			if (already_released == false)
 			{
 				for (unsigned long i = 0; i < 32; i++)
 				{
 					if (display->m_events.m_keys_up[i] == 0)
-					{
 						display->m_events.m_keys_up[i] = static_cast<int>(wParam);
-						break;
-					}
-				}
-			}
-			// We remove the key from the keys down array
-			for (unsigned long i = 0; i < 32; i++)
-			{
-				if (display->m_events.m_keys_down[i] == static_cast<int>(wParam))
-				{
-					display->m_events.m_keys_down[i] = 0;
-					break;
+					if (display->m_events.m_keys_down[i] == static_cast<int>(wParam))
+						display->m_events.m_keys_down[i] = 0;
 				}
 			}
 			return DefWindowProc(handle, message, wParam, lParam);
@@ -188,9 +162,9 @@ namespace NativeDisplayManager
 		WNDCLASSEX window_class = {};
 		SecureZeroMemory(&window_class, sizeof(WNDCLASSEX));
 		window_class.lpszClassName = TEXT("NativeDisplayManagerClass");
+		window_class.cbSize = sizeof(WNDCLASSEX);
 		window_class.lpfnWndProc = Display::WindowProcessEvent;
 		window_class.hInstance = m_instance;
-		window_class.cbSize = sizeof(WNDCLASSEX);
 		window_class.hbrBackground = (HBRUSH)(1 + COLOR_WINDOW);
 		window_class.style = CS_OWNDC;
 		window_class.hCursor = LoadCursor(NULL, IDC_ARROW);
@@ -210,6 +184,7 @@ namespace NativeDisplayManager
 
 		// Clear structs
 		SecureZeroMemory(&m_events, sizeof(DisplayEvents));
+		SecureZeroMemory(&m_messages, sizeof(MSG));
 
 		// Get the device context
 		m_device_context = GetDC(m_handle);
@@ -324,9 +299,8 @@ namespace NativeDisplayManager
 			throw std::runtime_error("Can't make the old OpenGL context !");
 	}
 
-	void Display::MakeOpenGLContext(const int major_version, const int minor_version, const bool double_buffer,
-									const int color_bits, const int depth_bits, const int stencil_bits,
-									const bool samples_buffers, const int samples)
+	void Display::MakeOpenGLContext(const int major_version, const int minor_version, const bool double_buffer, const int color_bits, 
+							  	    const int alpha_bits, const int depth_bits, const int stencil_bits, const bool samples_buffers, const int samples)
 	{
 		if(m_loaded == false)
 			throw std::runtime_error("Can't create an OpenGL context if the display is not loaded !");
@@ -423,7 +397,6 @@ namespace NativeDisplayManager
 			Display::wglSwapIntervalEXT == nullptr)
 			throw std::runtime_error("Can't get the WGL extensions functions !");
 
-
 		// Make good OpenGL context
 		const int pixel_format_attributes[] =
 		{
@@ -434,6 +407,7 @@ namespace NativeDisplayManager
 			0x2013, 0x202B, // WGL_PIXEL_TYPE_ARB 0x2013 WGL_TYPE_RGBA_ARB 0x202B
 			0x2014, color_bits, // WGL_COLOR_BITS_ARB 0x2014
 			0x2022, depth_bits, // WGL_DEPTH_BITS_ARB 0x2022
+			0x201B, alpha_bits, // WGL_ALPHA_BITS_ARB 0x201B
 			0x2023, stencil_bits, // WGL_STENCIL_BITS_ARB 0x2023
 			0x2041, samples_buffers, // WGL_SAMPLE_BUFFERS_ARB 0x2041
 			0x2042, samples, // WGL_SAMPLES_ARB 0x2042
@@ -455,7 +429,6 @@ namespace NativeDisplayManager
 
 		PIXELFORMATDESCRIPTOR pixel_format_descriptor = {};
 		SecureZeroMemory(&pixel_format_descriptor, sizeof(PIXELFORMATDESCRIPTOR));
-
 		if (DescribePixelFormat(m_device_context, pixel_format, sizeof(PIXELFORMATDESCRIPTOR), &pixel_format_descriptor) == 0)
 			throw std::runtime_error("Can't describe the pixel format !");
 
@@ -586,22 +559,35 @@ namespace NativeDisplayManager
 
 	void Display::SetCursorPosition(const unsigned long x, const unsigned long y) 
 	{ 
+		if(GetCursor() == nullptr)
+			throw std::runtime_error("There is no cursor available !");
+
 		SetCursorPos(GetX() + x, GetY() + y); 
 	}
 
 	void Display::SetCursorPositionToCenter()
 	{ 
+		if(GetCursor() == nullptr)
+			throw std::runtime_error("There is no cursor available !");
+
 		SetCursorPos(GetX() + GetWidth() / 2, GetY() - GetHeight() / 2); 
 	}
 
 	void Display::SetCursorVisible(const bool visible)
 	{ 
+		if(GetCursor() == nullptr)
+			throw std::runtime_error("There is no cursor available !");
+
 		ShowCursor(visible);
 	}
 
-	void Display::Close() const noexcept 
+	void Display::Close() const 
 	{ 
-		DestroyWindow(m_handle);
+		if(m_handle == nullptr)
+			throw std::runtime_error("There is no cursor available !");
+
+		if(m_events.closed == false)
+			DestroyWindow(m_handle);
 	}
 
     void Display::SetVisible(const bool visible) 
@@ -612,7 +598,6 @@ namespace NativeDisplayManager
 		} else {
 			ShowWindow(m_handle, SW_HIDE);
 		}
-		
 	}
 };
 
