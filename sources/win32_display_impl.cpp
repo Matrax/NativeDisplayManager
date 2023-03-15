@@ -14,11 +14,13 @@ namespace NativeDisplayManager
 		if (display == nullptr)
 			return DefWindowProc(handle, message, wParam, lParam);
 
-		if (message == WM_MOUSEMOVE)
+		const int xPos = static_cast<int>(GET_X_LPARAM(lParam));
+		const int yPos = static_cast<int>(GET_Y_LPARAM(lParam));
+
+		switch (message)
 		{
+		case WM_MOUSEMOVE:
 			display->m_events.moused_moved = true;
-			int xPos = static_cast<int>(GET_X_LPARAM(lParam));
-			int yPos = static_cast<int>(GET_Y_LPARAM(lParam));
 			display->m_events.previous_mouse_x = display->m_events.mouse_x;
 			display->m_events.previous_mouse_y = display->m_events.mouse_y;
 			display->m_events.mouse_x = xPos;
@@ -26,16 +28,10 @@ namespace NativeDisplayManager
 			display->m_events.mouse_direction_x = display->m_events.mouse_x - display->m_events.previous_mouse_x;
 			display->m_events.mouse_direction_y = display->m_events.mouse_y - display->m_events.previous_mouse_y;
 			return DefWindowProc(handle, message, wParam, lParam);
-		}
-
-		if (message == WM_DESTROY)
-		{
+		case WM_DESTROY:
 			display->m_events.closed = true;
 			return DefWindowProc(handle, message, wParam, lParam);
-		}
-
-		if (message == WM_SIZE)
-		{
+		case WM_SIZE:
 			if (wParam == SIZE_RESTORED)
 				display->m_events.resized = true;
 			if (wParam == SIZE_MINIMIZED)
@@ -43,121 +39,39 @@ namespace NativeDisplayManager
 			if (wParam == SIZE_MAXIMIZED)
 				display->m_events.maximized = true;
 			return DefWindowProc(handle, message, wParam, lParam);
-		}
-
-		if (message == WM_MOVE)
-		{
+		case WM_MOVE:
 			display->m_events.moved = true;
 			return DefWindowProc(handle, message, wParam, lParam);
-		}
-
-		if (message == WM_INPUTLANGCHANGE)
-		{
+		case WM_INPUTLANGCHANGE:
 			display->m_events.language_changed = true;
 			return DefWindowProc(handle, message, wParam, lParam);
-		}
-
-		if (message == WM_KEYDOWN)
-		{
-			bool already_pressed = false;
-			// Check if the key is already in the array
-			for (size_t i = 0; i < 32 && already_pressed == false; i++)
-			{
-				if (display->m_events.m_keys_down[i] == static_cast<int>(wParam))
-					already_pressed = true;
-			}
-			// If not, we add the key and remove from the keys up array
-			if (already_pressed == false)
-			{
-				for (size_t i = 0; i < 32; i++)
-				{
-					if (display->m_events.m_keys_down[i] == 0)
-					{
-						display->m_events.m_keys_down[i] = static_cast<int>(wParam);
-						break;
-					}
-				}
-				for (size_t i = 0; i < 32; i++)
-				{
-					if (display->m_events.m_keys_up[i] == static_cast<int>(wParam))
-					{
-						display->m_events.m_keys_up[i] = 0;
-						break;
-					}
-				}
-			}
+		case WM_KEYDOWN:
+			display->AddKeyPressed((int) wParam);
 			return DefWindowProc(handle, message, wParam, lParam);
-		}
-
-		if (message == WM_KEYUP)
-		{
-			bool already_released = false;
-			// Check if the key is already in the array
-			for (size_t i = 0; i < 32 && already_released == false; i++)
-			{
-				if (display->m_events.m_keys_up[i] == static_cast<int>(wParam))
-					already_released = true;
-			}
-			// If not, we add the key and remove from the keys down array
-			if (already_released == false)
-			{
-				for (size_t i = 0; i < 32; i++)
-				{
-					if (display->m_events.m_keys_up[i] == 0)
-					{
-						display->m_events.m_keys_up[i] = static_cast<int>(wParam);
-						break;
-					}
-				}
-				for (size_t i = 0; i < 32; i++)
-				{
-					if (display->m_events.m_keys_down[i] == static_cast<int>(wParam))
-					{
-						display->m_events.m_keys_down[i] = 0;
-						break;
-					}
-				}
-			}
+		case WM_KEYUP:
+			display->AddKeyReleased((int) wParam);
 			return DefWindowProc(handle, message, wParam, lParam);
-		}
-
-		if (message == WM_LBUTTONDOWN)
-		{
+		case WM_LBUTTONDOWN:
 			display->m_events.left_mouse_pressed = true;
 			display->m_events.left_mouse_released = false;
 			return DefWindowProc(handle, message, wParam, lParam);
-		}
-
-		if (message == WM_LBUTTONUP)
-		{
+		case WM_LBUTTONUP:
 			display->m_events.left_mouse_pressed = false;
 			display->m_events.left_mouse_released = true;
 			return DefWindowProc(handle, message, wParam, lParam);
-		}
-
-		if (message == WM_RBUTTONDOWN)
-		{
+		case WM_RBUTTONDOWN:
 			display->m_events.right_mouse_pressed = true;
 			display->m_events.right_mouse_released = false;
 			return DefWindowProc(handle, message, wParam, lParam);
-		}
-
-		if (message == WM_RBUTTONUP)
-		{
+		case WM_RBUTTONUP:
 			display->m_events.right_mouse_pressed = false;
 			display->m_events.right_mouse_released = true;
 			return DefWindowProc(handle, message, wParam, lParam);
-		}
-
-		if (message == WM_MBUTTONDOWN)
-		{
-			display->m_events.right_mouse_pressed = true;
-			display->m_events.right_mouse_released = false;
+		case WM_MBUTTONDOWN:
+			display->m_events.middle_mouse_pressed = true;
+			display->m_events.middle_mouse_released = false;
 			return DefWindowProc(handle, message, wParam, lParam);
-		}
-
-		if (message == WM_MBUTTONUP)
-		{
+		case WM_MBUTTONUP:
 			display->m_events.middle_mouse_pressed = false;
 			display->m_events.middle_mouse_released = true;
 			return DefWindowProc(handle, message, wParam, lParam);

@@ -287,13 +287,14 @@ namespace NativeDisplayManager
 		* This methods check if a virtual key is pressed.
 		* @param virtual_key The virtual key to check.
 		*/
-		bool IsKeyPressed(unsigned long virtual_key) const noexcept
+		bool IsKeyPressed(int virtual_key) const noexcept
 		{
-			for (unsigned long i = 0; i < 32; i++)
+			for (size_t i = 0; i < 32; i++)
 			{
 				if (m_events.m_keys_down[i] == virtual_key)
 					return true;
 			}
+
 			return false;
 		}
 
@@ -301,14 +302,89 @@ namespace NativeDisplayManager
 		* This methods check if a virtual key is released.
 		* @param virtual_key The virtual key to check.
 		*/
-		bool IsKeyReleased(unsigned long virtual_key) const noexcept
+		bool IsKeyReleased(int virtual_key) const noexcept
 		{
-			for (unsigned long i = 0; i < 32; i++)
+			for (size_t i = 0; i < 32; i++)
 			{
 				if (m_events.m_keys_up[i] == virtual_key)
 					return true;
 			}
+
 			return false;
+		}
+
+		/*
+		* This methods add a key pressed in the events struct, it also removed the same key from the keys released.
+		* @param virtual_key The virtual key to add.
+		*/
+		void AddKeyPressed(int virtual_key)
+		{
+			bool already_pressed = false;
+
+			// Check if the key is already in the array
+			for (size_t i = 0; i < 32 && already_pressed == false; i++)
+			{
+				if (m_events.m_keys_down[i] == virtual_key)
+					already_pressed = true;
+			}
+
+			// If not, we add the key and remove from the keys up array
+			if (already_pressed == false)
+			{
+				for (size_t i = 0; i < 32; i++)
+				{
+					if (m_events.m_keys_down[i] == 0)
+					{
+						m_events.m_keys_down[i] = virtual_key;
+						break;
+					}
+				}
+
+				for (size_t i = 0; i < 32; i++)
+				{
+					if (m_events.m_keys_up[i] == virtual_key)
+					{
+						m_events.m_keys_up[i] = 0;
+						break;
+					}
+				}
+			}
+		}
+
+		/*
+		* This methods add a key released in the events struct, it also removed the same key from the keys pressed.
+		* @param virtual_key The virtual key to add.
+		*/
+		void AddKeyReleased(int virtual_key)
+		{
+			bool already_released = false;
+
+			// Check if the key is already in the array
+			for (size_t i = 0; i < 32 && already_released == false; i++)
+			{
+				if (m_events.m_keys_up[i] == virtual_key)
+					already_released = true;
+			}
+			// If not, we add the key and remove from the keys down array
+			if (already_released == false)
+			{
+				for (size_t i = 0; i < 32; i++)
+				{
+					if (m_events.m_keys_up[i] == 0)
+					{
+						m_events.m_keys_up[i] = virtual_key;
+						break;
+					}
+				}
+				for (size_t i = 0; i < 32; i++)
+				{
+					if (m_events.m_keys_down[i] == virtual_key)
+					{
+						m_events.m_keys_down[i] = 0;
+						break;
+					}
+				}
+			}
 		}
 
 		/*
