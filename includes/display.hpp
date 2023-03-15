@@ -27,6 +27,13 @@ typedef BOOL(WINAPI* PFNWGLSWAPINTERVALEXTPROC) (int interval);
 
 namespace NativeDisplayManager
 {
+	/*
+	* This class is a singleton that represent a display. There is no default implementation of this class, 
+	* some methods need to be defined in an other class for each systems, also, some methods are shared by all the OS and are already defined in this header.
+	* Each implementation can set attributes in this class but can be only compiled on these implementations.
+	* Here the list of all implementation :
+	* - win32_display_impl.cpp -> implements the Win32 (x32 or x64) version. 
+	*/
 	class Display
 	{
 
@@ -41,7 +48,6 @@ namespace NativeDisplayManager
 
 		// Attributes on Windows
 		#if defined(_WIN32) || defined(_WIN64)
-		static LRESULT CALLBACK WindowProcessEvent(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
 		inline static PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB = nullptr;
 		inline static PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
 		inline static PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = nullptr;
@@ -52,9 +58,17 @@ namespace NativeDisplayManager
 		HINSTANCE m_instance = nullptr;
 		#endif
 
+		// Static functions on Windows
+		#if defined(_WIN32) || defined(_WIN64)
+		static LRESULT CALLBACK WindowProcessEvent(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
+		#endif
+
 	public:
 
-		// Constructor
+		/*
+		* Constructor of this class.
+		* This class is a singleton so if a display already exist, an exception is thrown. If not, the global instance is set.
+		*/
 		Display()
 		{
 			if (GLOBAL_INSTANCE != nullptr)
@@ -68,7 +82,10 @@ namespace NativeDisplayManager
 		Display(Display&) = delete;
 		Display(const Display&) = delete;
 
-		// Destructor
+		/*
+		* Destructor of this class.
+		* If the display is loaded, the destructor unload the display, and then release the global instance.
+		*/
 		~Display()
 		{
 			if (m_loaded == true)
@@ -77,34 +94,180 @@ namespace NativeDisplayManager
 			GLOBAL_INSTANCE = nullptr;
 		}
 
-		// Methods
+		/*
+		* This methods must return all the events catched by the display.
+		* This methods need to be implemented for each OS.
+		* @return DisplayEvents& The events structure
+		*/
 		DisplayEvents& GetEvents() noexcept;
+
+		/*
+		* This methods load the display.
+		* This methods need to be implemented for each OS.
+		* @param title The title of the display.
+		* @param width The width of the display on the screen.
+		* @param height The height of the display on the screen.
+		*/
 		void Load(const std::string_view title, const int width, const int height, const bool visible = false);
-		void SetFullScreen(const bool fullscreen);
-		void SwapFrontAndBack(const int swap_interval) const noexcept;
-		void MakeOldOpenGLContext(const bool double_buffer, const int color_bits, const int depth_bits, const int stencil_bits);
-		void MakeOpenGLContext(const int major_version, const int minor_version, const bool double_buffer, const int color_bits, const int alpha_bits, const int depth_bits, const int stencil_bits, const bool samples_buffers, const int samples);
-		void DeleteOpenGLContext() const;
-		void SetTitle(const std::string_view title);
-		void SetCursorPosition(const unsigned long x, const unsigned long y);
-		void SetCursorPositionToCenter();
-		void SetCursorVisible(const bool visible);
-		void Close() const noexcept;
-		void Hide() const noexcept;
-		void Show() const noexcept;
-		void SetX(const int x);
-		void SetY(const int y);
-		void SetWidth(const int width);
-		void SetHeight(const int height);
-		bool HasFocus() const;
-		int GetX() const;
-		int GetY() const;
-		int GetWidth() const;
-		int GetHeight() const;
+
+		/*
+		* This methods unload the display by releasing all the associated resources.
+		* This methods need to be implemented for each OS.
+		*/
 		void Unload();
 
-		// Shared methods
+		/*
+		* This methods set the display on full screen mode or not.
+		* This methods need to be implemented for each OS.
+		* @param fullscreen If the full screen mode is activated or not.
+		*/
+		void SetFullScreen(const bool fullscreen);
 
+		/*
+		* This methods swap the back and front buffer of the display if the display used double buffering.
+		* This methods need to be implemented for each OS.
+		* @param fullscreen The time interval between two swap (0 = no vsync, 1 = vsync).
+		*/
+		void SwapFrontAndBack(const int swap_interval) const noexcept;
+
+		/*
+		* This methods create an OpenGL context in an old way.
+		* This methods need to be implemented for each OS.
+		* @param double_buffer Use double buffering.
+		* @param color_bits Number of bits to represent a color on the color buffer.
+		* @param depth_bits Number of bits to represent a data on the depth buffer.
+		* @param depth_bits Number of bits to represent a data on the stencil buffer.
+		*/
+		void MakeOldOpenGLContext(const bool double_buffer, const int color_bits, const int depth_bits, const int stencil_bits);
+
+		/*
+		* This methods create an OpenGL context.
+		* This methods need to be implemented for each OS.
+		* @param major_version The OpenGL context major version to load.
+		* @param minor_version The OpenGL context minor version to load.
+		* @param double_buffer Use double buffering.
+		* @param color_bits Number of bits to represent a color on the color buffer.
+		* @param depth_bits Number of bits to represent a data on the depth buffer.
+		* @param depth_bits Number of bits to represent a data on the stencil buffer.
+		* @param samples_buffers Use samples in the buffers.
+		* @param samples Number of samples.
+		*/
+		void MakeOpenGLContext(const int major_version, const int minor_version, const bool double_buffer, const int color_bits, const int depth_bits, const int stencil_bits, const bool samples_buffers, const int samples);
+		
+		/*
+		* This methods delete the current OpenGL context.
+		* This methods need to be implemented for each OS.
+		*/
+		void DeleteOpenGLContext() const;
+
+		/*
+		* This methods set the title of the display.
+		* This methods need to be implemented for each OS.
+		* @param title The new title of the display.
+		*/
+		void SetTitle(const std::string_view title);
+
+		/*
+		* This methods set the cursor position on the display.
+		* This methods need to be implemented for each OS.
+		* @param x The x position of the cursor on the screen.
+		* @param y The y position of the cursor on the screen.
+		*/
+		void SetCursorPosition(const unsigned long x, const unsigned long y);
+
+		/*
+		* This methods set the cursor position on the center of the display.
+		* This methods need to be implemented for each OS.
+		*/
+		void SetCursorPositionToCenter();
+
+		/*
+		* This methods set the visibility of the cursor on the display.
+		* This methods need to be implemented for each OS.
+		* @param visible The visibility of the cursor.
+		*/
+		void SetCursorVisible(const bool visible);
+
+		/*
+		* This methods set the visibility of the display.
+		* This methods need to be implemented for each OS.
+		* @param visible The visibility of the display.
+		*/
+		void SetVisible(const bool visible);
+
+		/*
+		* This methods destroy the display on the screen.
+		* This methods need to be implemented for each OS.
+		*/
+		void Close() const noexcept;
+
+		/*
+		* This methods set the display x position on the screen.
+		* This methods need to be implemented for each OS.
+		* @param x The x position
+		*/
+		void SetX(const int x);
+
+		/*
+		* This methods set the display y position on the screen.
+		* This methods need to be implemented for each OS.
+		* @param y The y display
+		*/
+		void SetY(const int y);
+
+		/*
+		* This methods set the display width.
+		* This methods need to be implemented for each OS.
+		* @param width The width of the display
+		*/
+		void SetWidth(const int width);
+
+		/*
+		* This methods set the display height.
+		* This methods need to be implemented for each OS.
+		* @param height The height of the display
+		*/
+		void SetHeight(const int height);
+
+		/*
+		* This methods check if the display has the focus (if the display is on the top).
+		* This methods need to be implemented for each OS.
+		* @return If the window has the focus.
+		*/
+		bool HasFocus() const;
+
+		/*
+		* This methods get the x position of the display on the screen.
+		* This methods need to be implemented for each OS.
+		* @return The x position of the display on the screen.
+		*/
+		int GetX() const;
+
+		/*
+		* This methods get the y position of the display on the screen.
+		* This methods need to be implemented for each OS.
+		* @return The y position of the display on the screen.
+		*/
+		int GetY() const;
+
+		/*
+		* This methods get the width of the display.
+		* This methods need to be implemented for each OS.
+		* @return The width position of the display.
+		*/
+		int GetWidth() const;
+
+		/*
+		* This methods get the height of the display.
+		* This methods need to be implemented for each OS.
+		* @return The height position of the display.
+		*/
+		int GetHeight() const;
+
+		/*
+		* This methods check if a virtual key is pressed.
+		* @param virtual_key The virtual key to check.
+		*/
 		bool IsKeyPressed(unsigned long virtual_key) const noexcept
 		{
 			for (unsigned long i = 0; i < 32; i++)
@@ -116,6 +279,10 @@ namespace NativeDisplayManager
 			return false;
 		}
 
+		/*
+		* This methods check if a virtual key is released.
+		* @param virtual_key The virtual key to check.
+		*/
 		bool IsKeyReleased(unsigned long virtual_key) const noexcept
 		{
 			for (unsigned long i = 0; i < 32; i++)
@@ -127,8 +294,18 @@ namespace NativeDisplayManager
 			return false;
 		}
 
+		/*
+		* This methods check if the left mouse button is pressed (managed by the )
+		* @return If the left mouse button is pressed.
+		*/
 		inline bool IsLeftMouseButtonPressed() const noexcept { return m_events.left_mouse_pressed; }
+
+		/*
+		* This methods check if the left mouse button is pressed.
+		* @return If the left mouse button is pressed.
+		*/
 		inline bool IsLeftMouseButtonReleased() const noexcept { return m_events.left_mouse_released; }
+
 		inline bool IsRightMouseButtonPressed() const noexcept { return m_events.right_mouse_pressed; }
 		inline bool IsRightMouseButtonReleased() const noexcept { return m_events.right_mouse_released; }
 		inline bool IsMiddleMouseButtonPressed() const noexcept { return m_events.middle_mouse_pressed; }

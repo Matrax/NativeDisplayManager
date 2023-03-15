@@ -173,8 +173,7 @@ namespace NativeDisplayManager
 
 		return DefWindowProc(handle, message, wParam, lParam);
 	}
-
-	// Load the window
+	
 	void Display::Load(const std::string_view title, const int width, const int height, const bool visible)
 	{
 		if (m_loaded == true)
@@ -218,8 +217,7 @@ namespace NativeDisplayManager
 			throw std::runtime_error("Can't get the device context !");
 
 		// If visible
-		if (visible == true)
-			Show();
+		SetVisible(visible);
 
 		m_loaded = true;
 	}
@@ -327,7 +325,7 @@ namespace NativeDisplayManager
 	}
 
 	void Display::MakeOpenGLContext(const int major_version, const int minor_version, const bool double_buffer,
-									const int color_bits, const int alpha_bits, const int depth_bits, const int stencil_bits,
+									const int color_bits, const int depth_bits, const int stencil_bits,
 									const bool samples_buffers, const int samples)
 	{
 		if(m_loaded == false)
@@ -435,7 +433,6 @@ namespace NativeDisplayManager
 			0x2003, 0x2027, // WGL_ACCELERATION_ARB 0x2003 WGL_FULL_ACCELERATION_ARB 0x2027
 			0x2013, 0x202B, // WGL_PIXEL_TYPE_ARB 0x2013 WGL_TYPE_RGBA_ARB 0x202B
 			0x2014, color_bits, // WGL_COLOR_BITS_ARB 0x2014
-			0x201B, alpha_bits, // WGL_ALPHA_BITS_ARB 0x201B
 			0x2022, depth_bits, // WGL_DEPTH_BITS_ARB 0x2022
 			0x2023, stencil_bits, // WGL_STENCIL_BITS_ARB 0x2023
 			0x2041, samples_buffers, // WGL_SAMPLE_BUFFERS_ARB 0x2041
@@ -604,17 +601,18 @@ namespace NativeDisplayManager
 
 	void Display::Close() const noexcept 
 	{ 
-		DestroyWindow(m_handle); 
+		DestroyWindow(m_handle);
 	}
 
-    void Display::Show() const noexcept 
+    void Display::SetVisible(const bool visible) 
 	{ 
-		ShowWindow(m_handle, SW_SHOW); 
-	}
-
-	void Display::Hide() const noexcept 
-	{
-		ShowWindow(m_handle, SW_HIDE); 
+		if(visible == true)
+		{
+			ShowWindow(m_handle, SW_SHOW);
+		} else {
+			ShowWindow(m_handle, SW_HIDE);
+		}
+		
 	}
 };
 
