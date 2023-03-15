@@ -294,7 +294,6 @@ namespace NativeDisplayManager
 				if (m_events.m_keys_down[i] == virtual_key)
 					return true;
 			}
-
 			return false;
 		}
 
@@ -309,7 +308,6 @@ namespace NativeDisplayManager
 				if (m_events.m_keys_up[i] == virtual_key)
 					return true;
 			}
-
 			return false;
 		}
 

@@ -61,7 +61,7 @@ namespace NativeDisplayManager
 		{
 			bool already_pressed = false;
 			// Check if the key is already in the array
-			for (unsigned long i = 0; i < 32  && already_pressed == false; i++)
+			for (size_t i = 0; i < 32 && already_pressed == false; i++)
 			{
 				if (display->m_events.m_keys_down[i] == static_cast<int>(wParam))
 					already_pressed = true;
@@ -69,12 +69,21 @@ namespace NativeDisplayManager
 			// If not, we add the key and remove from the keys up array
 			if (already_pressed == false)
 			{
-				for (unsigned long i = 0; i < 32; i++)
+				for (size_t i = 0; i < 32; i++)
 				{
 					if (display->m_events.m_keys_down[i] == 0)
+					{
 						display->m_events.m_keys_down[i] = static_cast<int>(wParam);
+						break;
+					}
+				}
+				for (size_t i = 0; i < 32; i++)
+				{
 					if (display->m_events.m_keys_up[i] == static_cast<int>(wParam))
+					{
 						display->m_events.m_keys_up[i] = 0;
+						break;
+					}
 				}
 			}
 			return DefWindowProc(handle, message, wParam, lParam);
@@ -84,7 +93,7 @@ namespace NativeDisplayManager
 		{
 			bool already_released = false;
 			// Check if the key is already in the array
-			for (unsigned long i = 0; i < 32 && already_released == false; i++)
+			for (size_t i = 0; i < 32 && already_released == false; i++)
 			{
 				if (display->m_events.m_keys_up[i] == static_cast<int>(wParam))
 					already_released = true;
@@ -92,12 +101,21 @@ namespace NativeDisplayManager
 			// If not, we add the key and remove from the keys down array
 			if (already_released == false)
 			{
-				for (unsigned long i = 0; i < 32; i++)
+				for (size_t i = 0; i < 32; i++)
 				{
 					if (display->m_events.m_keys_up[i] == 0)
+					{
 						display->m_events.m_keys_up[i] = static_cast<int>(wParam);
+						break;
+					}
+				}
+				for (size_t i = 0; i < 32; i++)
+				{
 					if (display->m_events.m_keys_down[i] == static_cast<int>(wParam))
+					{
 						display->m_events.m_keys_down[i] = 0;
+						break;
+					}
 				}
 			}
 			return DefWindowProc(handle, message, wParam, lParam);
@@ -215,7 +233,7 @@ namespace NativeDisplayManager
 				throw std::runtime_error("Can't get the primary monitor informations !");
 
 			SetWindowLongPtr(m_handle, GWL_STYLE, WS_POPUP);
-			SetWindowPos(m_handle, HWND_TOPMOST, 0, 0, monitor_info.rcMonitor.right, monitor_info.rcMonitor.bottom, SWP_SHOWWINDOW);
+			SetWindowPos(m_handle, HWND_TOP, 0, 0, monitor_info.rcMonitor.right, monitor_info.rcMonitor.bottom, SWP_SHOWWINDOW);
 		} else {
 			SetWindowLongPtr(m_handle, GWL_STYLE, WS_OVERLAPPEDWINDOW);
 			SetWindowPos(m_handle, HWND_BOTTOM, 100, 100, 900, 600, SWP_SHOWWINDOW);
