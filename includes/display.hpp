@@ -24,12 +24,52 @@ typedef BOOL(WINAPI* PFNWGLSWAPINTERVALEXTPROC) (int interval);
 #include <string>
 #include <string_view>
 #include <exception>
-
-// NativeDisplayManager includes
-#include "display_events.hpp"
+#include <vector>
 
 namespace NativeDisplayManager
 {
+	struct MonitorInfo
+	{
+        std::string name;
+		unsigned int width;
+        unsigned int height;
+	};
+	
+	/*
+	* This structure represent all the events happening during the execution by a display, getters for all 
+	* of them are defined in the display class directly, all implementations must use this structure to report 
+	* all the following events :
+	* - mouse and keyboard inputs 
+	* - mouse position and mouse direction
+	* - display resized, minimized, maximized, moved
+	* - display closed
+	* - os languages changed
+	*/
+	struct DisplayEvents
+	{
+		int m_keys_down[32];
+		int m_keys_up[32];
+		int previous_mouse_x;
+		int previous_mouse_y;
+		int mouse_x;
+		int mouse_y;
+		int mouse_direction_x;
+		int mouse_direction_y;
+		bool resized;
+		bool closed;
+		bool minimized;
+		bool maximized;
+		bool moved;
+		bool moused_moved;
+		bool language_changed;
+		bool left_mouse_pressed;
+		bool right_mouse_pressed;
+		bool middle_mouse_pressed;
+		bool left_mouse_released;
+		bool right_mouse_released;
+		bool middle_mouse_released;
+	};
+
 	/*
 	* This class is a singleton that represent a display. There is no default implementation of this class, 
 	* some methods need to be defined in an other class for each systems, also, some methods are shared by all the OS 
@@ -46,6 +86,9 @@ namespace NativeDisplayManager
 
 		// Global instance
 		inline static Display * GLOBAL_INSTANCE = nullptr;
+
+		// Static
+		inline static std::vector<MonitorInfo> monitors;
 
 		// Shared attributes
 		DisplayEvents m_events = {};
@@ -70,6 +113,7 @@ namespace NativeDisplayManager
 		// Windows only static functions
 		#if defined(_WIN32) || defined(_WIN64)
 		static LRESULT CALLBACK WindowProcessEvent(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
+		static BOOL CALLBACK MonitorProcess(HMONITOR hMon, HDC hdc, LPRECT lprcMonitor, LPARAM pData);
 		#endif
 
 	public:
@@ -108,6 +152,13 @@ namespace NativeDisplayManager
 		* @return The global instance.
 		*/
 		inline static Display * GetInstance() { return Display::GLOBAL_INSTANCE; }
+
+		/*
+		* This static function get informations about a monitor specified with the id.
+		* This static function need to be implemented for each OS.
+		* @return All informations about a monitor specified with the id.
+		*/
+		static std::vector<MonitorInfo> GetMonitors(); 
 
 		/*
 		* This methods must return all the events catched by the display.

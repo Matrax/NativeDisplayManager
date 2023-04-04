@@ -79,7 +79,32 @@ namespace NativeDisplayManager
 
 		return DefWindowProc(handle, message, wParam, lParam);
 	}
-	
+
+	BOOL CALLBACK Display::MonitorProcess(HMONITOR hMon, HDC hdc, LPRECT lprcMonitor, LPARAM pData)
+	{
+		MONITORINFOEX monitor_info = {};
+		monitor_info.cbSize = sizeof(MONITORINFOEX);
+		GetMonitorInfo(hMon, &monitor_info);
+
+		MonitorInfo info = {};
+		info.name = std::string((char *) monitor_info.szDevice);
+		info.width = lprcMonitor->right - lprcMonitor->left;
+		info.height = lprcMonitor->bottom - lprcMonitor->top;
+		Display::monitors.push_back(info);
+
+		return TRUE;
+	}
+
+	std::vector<MonitorInfo> Display::GetMonitors()
+	{
+		Display::monitors.clear();
+
+		if(EnumDisplayMonitors(NULL, NULL, MonitorProcess, NULL) == 0)
+			throw std::runtime_error("Can't enumerate all the monitors !");
+		
+		return Display::monitors;
+	}
+
 	void Display::Load(const std::string_view title, const int width, const int height, const bool visible)
 	{
 		if (m_loaded == true)
