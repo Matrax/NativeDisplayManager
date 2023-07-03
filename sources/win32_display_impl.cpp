@@ -10,13 +10,16 @@ namespace NativeDisplayManager
 {
 	LRESULT CALLBACK Display::WindowProcessEvent(HWND handle, UINT message, WPARAM wParam, LPARAM lParam)
 	{
+		// Get the display instance
 		Display* display = Display::GLOBAL_INSTANCE;
 		if (display == nullptr)
 			return DefWindowProc(handle, message, wParam, lParam);
 
+		// Get mouse x and y position
 		const int xPos = static_cast<int>(GET_X_LPARAM(lParam));
 		const int yPos = static_cast<int>(GET_Y_LPARAM(lParam));
 
+		// Check messages
 		switch (message)
 		{
 		case WM_MOUSEMOVE:
@@ -27,10 +30,10 @@ namespace NativeDisplayManager
 			display->m_events.mouse_y = yPos;
 			display->m_events.mouse_direction_x = display->m_events.mouse_x - display->m_events.previous_mouse_x;
 			display->m_events.mouse_direction_y = display->m_events.mouse_y - display->m_events.previous_mouse_y;
-			return DefWindowProc(handle, message, wParam, lParam);
+			break;
 		case WM_DESTROY:
 			display->m_events.closed = true;
-			return DefWindowProc(handle, message, wParam, lParam);
+			break;
 		case WM_SIZE:
 			if (wParam == SIZE_RESTORED)
 				display->m_events.resized = true;
@@ -38,43 +41,43 @@ namespace NativeDisplayManager
 				display->m_events.minimized = true;
 			if (wParam == SIZE_MAXIMIZED)
 				display->m_events.maximized = true;
-			return DefWindowProc(handle, message, wParam, lParam);
+			break;
 		case WM_MOVE:
 			display->m_events.moved = true;
-			return DefWindowProc(handle, message, wParam, lParam);
+			break;
 		case WM_INPUTLANGCHANGE:
 			display->m_events.language_changed = true;
-			return DefWindowProc(handle, message, wParam, lParam);
+			break;
 		case WM_KEYDOWN:
 			display->AddKeyPressed((int) wParam);
-			return DefWindowProc(handle, message, wParam, lParam);
+			break;
 		case WM_KEYUP:
 			display->AddKeyReleased((int) wParam);
-			return DefWindowProc(handle, message, wParam, lParam);
+			break;
 		case WM_LBUTTONDOWN:
 			display->m_events.left_mouse_pressed = true;
 			display->m_events.left_mouse_released = false;
-			return DefWindowProc(handle, message, wParam, lParam);
+			break;
 		case WM_LBUTTONUP:
 			display->m_events.left_mouse_pressed = false;
 			display->m_events.left_mouse_released = true;
-			return DefWindowProc(handle, message, wParam, lParam);
+			break;
 		case WM_RBUTTONDOWN:
 			display->m_events.right_mouse_pressed = true;
 			display->m_events.right_mouse_released = false;
-			return DefWindowProc(handle, message, wParam, lParam);
+			break;
 		case WM_RBUTTONUP:
 			display->m_events.right_mouse_pressed = false;
 			display->m_events.right_mouse_released = true;
-			return DefWindowProc(handle, message, wParam, lParam);
+			break;
 		case WM_MBUTTONDOWN:
 			display->m_events.middle_mouse_pressed = true;
 			display->m_events.middle_mouse_released = false;
-			return DefWindowProc(handle, message, wParam, lParam);
+			break;
 		case WM_MBUTTONUP:
 			display->m_events.middle_mouse_pressed = false;
 			display->m_events.middle_mouse_released = true;
-			return DefWindowProc(handle, message, wParam, lParam);
+			break;
 		}
 
 		return DefWindowProc(handle, message, wParam, lParam);
@@ -541,7 +544,7 @@ namespace NativeDisplayManager
 	void Display::Close() const 
 	{ 
 		if(m_handle == nullptr)
-			throw std::runtime_error("There is no cursor available !");
+			throw std::runtime_error("There is no display on the screen !");
 
 		if(m_events.closed == false)
 			DestroyWindow(m_handle);

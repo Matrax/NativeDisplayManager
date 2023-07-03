@@ -1,47 +1,39 @@
 #CMake version
 cmake_minimum_required(VERSION 3.20)
 
-# Set default cmake properties and variables
+# Set CMake property
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-set(LIB_NAME "NativeDisplayManager")
-set(WIN32_IMPLEMENTATION_FILE "sources/win32_display_impl.cpp")
-set(WIN32_TEST_FILE "tests/win32_opengl_test.cpp")
-set(WIN32_LINKER_LIBS "opengl32.lib")
 
+# NativeDisplayManager variables
+set(LIB_NAME "NativeDisplayManager")
+set(LIB_VERSION 1.0)
+
+# Build type
 if(NOT DEFINED ENV{CMAKE_BUILD_TYPE})
     message(STATUS "Set build type to debug")
     set(CMAKE_BUILD_TYPE "Debug")
 endif()
-
-# Functions
-function(COMPILE_LIBRARY lib_name sources)
-    add_library(${lib_name} STATIC ${sources})
-endfunction(COMPILE_LIBRARY)
-
-function(COMPILE_TEST lib_name exec_name sources libraries)
-    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-        set(CMAKE_WIN32_EXECUTABLE False)
-    endif()
-    add_executable(${exec_name} ${sources})
-    target_link_libraries(${exec_name} ${lib_name} ${libraries})
-    target_include_directories(${exec_name} PUBLIC "includes")
-endfunction(COMPILE_TEST)
+message(STATUS "Build type : ${CMAKE_BUILD_TYPE}")
 
 # Project
-project(NativeDisplayManager 
-        VERSION 
-            1.0 
-        DESCRIPTION
-            "Multi-platform display library"
-        HOMEPAGE_URL
-            "https://github.com/Matrax/NativeDisplayManager"
-        LANGUAGES 
-            CXX)
-message(STATUS "Build type : ${CMAKE_BUILD_TYPE}")
+project(${LIB_NAME}
+        VERSION ${LIB_VERSION}
+        DESCRIPTION "Multi-platform display library"
+        HOMEPAGE_URL "https://github.com/Matrax/NativeDisplayManager"
+        LANGUAGES CXX)
 
 # If Windows
 if (WIN32)
-    compile_library(${LIB_NAME} ${WIN32_IMPLEMENTATION_FILE})
-    compile_test(${LIB_NAME} "win32_test" ${WIN32_TEST_FILE} ${WIN32_LINKER_LIBS})
+
+    add_library(${LIB_NAME} STATIC "sources/win32_display_impl.cpp")
+
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        set(CMAKE_WIN32_EXECUTABLE False)
+    endif()
+
+    add_executable(win32_test "tests/win32_opengl_test.cpp")
+    target_link_libraries(win32_test ${LIB_NAME} "opengl32.lib")
+    target_include_directories(win32_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/includes)
+
 endif (WIN32)
