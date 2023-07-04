@@ -14,6 +14,11 @@ if(NOT DEFINED ENV{CMAKE_BUILD_TYPE})
     message(STATUS "Set build type to debug")
     set(CMAKE_BUILD_TYPE "Debug")
 endif()
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(CMAKE_WIN32_EXECUTABLE False)
+endif()
+
 message(STATUS "Build type : ${CMAKE_BUILD_TYPE}")
 
 # Project
@@ -26,14 +31,18 @@ project(${LIB_NAME}
 # If Windows
 if (WIN32)
 
+    # Create Win32 library
     add_library(${LIB_NAME} STATIC "sources/win32_display_impl.cpp")
+    target_link_libraries(${LIB_NAME} PUBLIC "opengl32.lib")
+    target_include_directories(${LIB_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/includes)
 
-    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-        set(CMAKE_WIN32_EXECUTABLE False)
+    # Compile test
+    if(DEFINED NDM_COMPILE_TESTS)
+
+        add_executable(win32_test "tests/win32_opengl_test.cpp")
+        target_link_libraries(win32_test ${LIB_NAME})
+
     endif()
 
-    add_executable(win32_test "tests/win32_opengl_test.cpp")
-    target_link_libraries(win32_test ${LIB_NAME} "opengl32.lib")
-    target_include_directories(win32_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/includes)
 
 endif (WIN32)
