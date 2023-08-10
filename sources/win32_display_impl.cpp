@@ -4,7 +4,7 @@
 #if defined(_WIN32) || defined(_WIN64)
 
 // NativeDisplayManager includes
-#include "../includes/display.hpp"
+#include <ndm/display.hpp>
 
 namespace NativeDisplayManager
 {
@@ -154,6 +154,9 @@ namespace NativeDisplayManager
 		// If visible
 		SetVisible(visible);
 
+		// Set title
+		SetTitle(title);
+
 		m_loaded = true;
 	}
 
@@ -218,10 +221,11 @@ namespace NativeDisplayManager
 	{
 		if (m_loaded == true && m_device_context != nullptr)
 		{
-			// Swap the back and front
+			// Set the swap interval
 			if (Display::wglSwapIntervalEXT != nullptr)
 				Display::wglSwapIntervalEXT(swap_interval);
 
+			// Swap the back and front
 			SwapBuffers(m_device_context);
 		}
 	}

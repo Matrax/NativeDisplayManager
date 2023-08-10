@@ -1,5 +1,5 @@
 // NativeDisplayManager includes
-#include <display.hpp>
+#include <ndm/display.hpp>
 
 // GL includes
 #include <gl/GL.h>

@@ -43,7 +43,6 @@ namespace NativeDisplayManager
 	* - mouse position and mouse direction
 	* - display resized, minimized, maximized, moved
 	* - display closed
-	* - os languages changed
 	*/
 	struct DisplayEvents
 	{
@@ -416,6 +415,7 @@ namespace NativeDisplayManager
 				if (m_events.m_keys_up[i] == virtual_key)
 					already_released = true;
 			}
+			
 			// If not, we add the key and remove from the keys down array
 			if (already_released == false)
 			{

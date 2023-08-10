@@ -1,13 +1,20 @@
 #CMake version
 cmake_minimum_required(VERSION 3.20)
 
-# Set CMake property
+# options
+option(BUILD_TESTS "Build the tests" OFF)
+
+# Set CMake properties
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # NativeDisplayManager variables
-set(LIB_NAME "NativeDisplayManager")
-set(LIB_VERSION 1.0)
+set(NDM_LIB_NAME "NativeDisplayManager")
+set(NDM_LIB_VERSION 1.0)
+set(NDM_INCLUDES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/includes")
+set(NDM_WIN32_SOURCES "sources/win32_display_impl.cpp")
+set(NDM_WIN32_LIBRARIES "opengl32.lib")
+set(NDM_WIN32_TESTS "tests/win32_opengl_test.cpp")
 
 # Build type
 if(NOT DEFINED ENV{CMAKE_BUILD_TYPE})
@@ -19,11 +26,9 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_WIN32_EXECUTABLE False)
 endif()
 
-message(STATUS "Build type : ${CMAKE_BUILD_TYPE}")
-
 # Project
-project(${LIB_NAME}
-        VERSION ${LIB_VERSION}
+project(${NDM_LIB_NAME}
+        VERSION ${NDM_LIB_VERSION}
         DESCRIPTION "Multi-platform display library"
         HOMEPAGE_URL "https://github.com/Matrax/NativeDisplayManager"
         LANGUAGES CXX)
@@ -32,17 +37,14 @@ project(${LIB_NAME}
 if (WIN32)
 
     # Create Win32 library
-    add_library(${LIB_NAME} STATIC "sources/win32_display_impl.cpp")
-    target_link_libraries(${LIB_NAME} PUBLIC "opengl32.lib")
-    target_include_directories(${LIB_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/includes)
+    add_library(${NDM_LIB_NAME} STATIC ${NDM_WIN32_SOURCES})
+    target_link_libraries(${NDM_LIB_NAME} PUBLIC ${NDM_WIN32_LIBRARIES})
+    target_include_directories(${NDM_LIB_NAME} PUBLIC ${NDM_INCLUDES_DIR})
 
     # Compile test
-    if(DEFINED NDM_COMPILE_TESTS)
-
-        add_executable(win32_test "tests/win32_opengl_test.cpp")
-        target_link_libraries(win32_test ${LIB_NAME})
-
+    if(BUILD_TESTS)
+        add_executable(ndm_win32_test ${NDM_WIN32_TESTS})
+        target_link_libraries(ndm_win32_test ${NDM_LIB_NAME})
     endif()
-
 
 endif (WIN32)
