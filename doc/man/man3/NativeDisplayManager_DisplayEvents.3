@@ -1,0 +1,185 @@
+.TH "NativeDisplayManager::DisplayEvents" 3 "Version 1.0" "NativeDisplayManager" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+NativeDisplayManager::DisplayEvents \- This structure represent all the events happening during the execution by a display, getters for all of them are defined in the display class directly, all implementations must use this structure to report all the following events :  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <display\&.hpp>\fP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "int \fBm_keys_down\fP [32]"
+.br
+.ti -1c
+.RI "int \fBm_keys_up\fP [32]"
+.br
+.ti -1c
+.RI "int \fBprevious_mouse_x\fP"
+.br
+.ti -1c
+.RI "int \fBprevious_mouse_y\fP"
+.br
+.ti -1c
+.RI "int \fBmouse_x\fP"
+.br
+.ti -1c
+.RI "int \fBmouse_y\fP"
+.br
+.ti -1c
+.RI "int \fBmouse_direction_x\fP"
+.br
+.ti -1c
+.RI "int \fBmouse_direction_y\fP"
+.br
+.ti -1c
+.RI "bool \fBresized\fP"
+.br
+.ti -1c
+.RI "bool \fBclosed\fP"
+.br
+.ti -1c
+.RI "bool \fBminimized\fP"
+.br
+.ti -1c
+.RI "bool \fBmaximized\fP"
+.br
+.ti -1c
+.RI "bool \fBmoved\fP"
+.br
+.ti -1c
+.RI "bool \fBmoused_moved\fP"
+.br
+.ti -1c
+.RI "bool \fBlanguage_changed\fP"
+.br
+.ti -1c
+.RI "bool \fBleft_mouse_pressed\fP"
+.br
+.ti -1c
+.RI "bool \fBright_mouse_pressed\fP"
+.br
+.ti -1c
+.RI "bool \fBmiddle_mouse_pressed\fP"
+.br
+.ti -1c
+.RI "bool \fBleft_mouse_released\fP"
+.br
+.ti -1c
+.RI "bool \fBright_mouse_released\fP"
+.br
+.ti -1c
+.RI "bool \fBmiddle_mouse_released\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This structure represent all the events happening during the execution by a display, getters for all of them are defined in the display class directly, all implementations must use this structure to report all the following events : 
+
+
+.IP "\(bu" 2
+mouse and keyboard inputs
+.IP "\(bu" 2
+mouse position and mouse direction
+.IP "\(bu" 2
+display resized, minimized, maximized, moved
+.IP "\(bu" 2
+display closed 
+.PP
+
+.PP
+Definition at line \fB24\fP of file \fBdisplay\&.hpp\fP\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "bool NativeDisplayManager::DisplayEvents::closed"
+
+.PP
+Definition at line \fB35\fP of file \fBdisplay\&.hpp\fP\&.
+.SS "bool NativeDisplayManager::DisplayEvents::language_changed"
+
+.PP
+Definition at line \fB40\fP of file \fBdisplay\&.hpp\fP\&.
+.SS "bool NativeDisplayManager::DisplayEvents::left_mouse_pressed"
+
+.PP
+Definition at line \fB41\fP of file \fBdisplay\&.hpp\fP\&.
+.SS "bool NativeDisplayManager::DisplayEvents::left_mouse_released"
+
+.PP
+Definition at line \fB44\fP of file \fBdisplay\&.hpp\fP\&.
+.SS "int NativeDisplayManager::DisplayEvents::m_keys_down[32]"
+
+.PP
+Definition at line \fB26\fP of file \fBdisplay\&.hpp\fP\&.
+.SS "int NativeDisplayManager::DisplayEvents::m_keys_up[32]"
+
+.PP
+Definition at line \fB27\fP of file \fBdisplay\&.hpp\fP\&.
+.SS "bool NativeDisplayManager::DisplayEvents::maximized"
+
+.PP
+Definition at line \fB37\fP of file \fBdisplay\&.hpp\fP\&.
+.SS "bool NativeDisplayManager::DisplayEvents::middle_mouse_pressed"
+
+.PP
+Definition at line \fB43\fP of file \fBdisplay\&.hpp\fP\&.
+.SS "bool NativeDisplayManager::DisplayEvents::middle_mouse_released"
+
+.PP
+Definition at line \fB46\fP of file \fBdisplay\&.hpp\fP\&.
+.SS "bool NativeDisplayManager::DisplayEvents::minimized"
+
+.PP
+Definition at line \fB36\fP of file \fBdisplay\&.hpp\fP\&.
+.SS "int NativeDisplayManager::DisplayEvents::mouse_direction_x"
+
+.PP
+Definition at line \fB32\fP of file \fBdisplay\&.hpp\fP\&.
+.SS "int NativeDisplayManager::DisplayEvents::mouse_direction_y"
+
+.PP
+Definition at line \fB33\fP of file \fBdisplay\&.hpp\fP\&.
+.SS "int NativeDisplayManager::DisplayEvents::mouse_x"
+
+.PP
+Definition at line \fB30\fP of file \fBdisplay\&.hpp\fP\&.
+.SS "int NativeDisplayManager::DisplayEvents::mouse_y"
+
+.PP
+Definition at line \fB31\fP of file \fBdisplay\&.hpp\fP\&.
+.SS "bool NativeDisplayManager::DisplayEvents::moused_moved"
+
+.PP
+Definition at line \fB39\fP of file \fBdisplay\&.hpp\fP\&.
+.SS "bool NativeDisplayManager::DisplayEvents::moved"
+
+.PP
+Definition at line \fB38\fP of file \fBdisplay\&.hpp\fP\&.
+.SS "int NativeDisplayManager::DisplayEvents::previous_mouse_x"
+
+.PP
+Definition at line \fB28\fP of file \fBdisplay\&.hpp\fP\&.
+.SS "int NativeDisplayManager::DisplayEvents::previous_mouse_y"
+
+.PP
+Definition at line \fB29\fP of file \fBdisplay\&.hpp\fP\&.
+.SS "bool NativeDisplayManager::DisplayEvents::resized"
+
+.PP
+Definition at line \fB34\fP of file \fBdisplay\&.hpp\fP\&.
+.SS "bool NativeDisplayManager::DisplayEvents::right_mouse_pressed"
+
+.PP
+Definition at line \fB42\fP of file \fBdisplay\&.hpp\fP\&.
+.SS "bool NativeDisplayManager::DisplayEvents::right_mouse_released"
+
+.PP
+Definition at line \fB45\fP of file \fBdisplay\&.hpp\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for NativeDisplayManager from the source code\&.

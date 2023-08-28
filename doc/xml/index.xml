@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.9.8" xml:lang="en-US">
+  <compound refid="class_native_display_manager_1_1_display" kind="class"><name>NativeDisplayManager::Display</name>
+    <member refid="class_native_display_manager_1_1_display_1a9e3df1e2854b137d94a4d8351e5f731b" kind="variable"><name>m_events</name></member>
+    <member refid="class_native_display_manager_1_1_display_1adedd245d7ed902e5c2e512664c6116ea" kind="variable"><name>m_loaded</name></member>
+    <member refid="class_native_display_manager_1_1_display_a4cd7d842644296a04e13e128b7c7f349_1a4cd7d842644296a04e13e128b7c7f349" kind="function"><name>Display</name></member>
+    <member refid="class_native_display_manager_1_1_display_1a4319cd1e3c3ef469119ed7da57f5b60b" kind="function"><name>Display</name></member>
+    <member refid="class_native_display_manager_1_1_display_1a4cc9c3270443f3577cf8969eea4e5ccf" kind="function"><name>Display</name></member>
+    <member refid="class_native_display_manager_1_1_display_a70df3bb748a7057c496aa10152f39b23_1a70df3bb748a7057c496aa10152f39b23" kind="function"><name>~Display</name></member>
+    <member refid="class_native_display_manager_1_1_display_aff2fd3b39135ce1211d25925af7f6fd1_1aff2fd3b39135ce1211d25925af7f6fd1" kind="function"><name>CatchEvents</name></member>
+    <member refid="class_native_display_manager_1_1_display_afa0f4be91466ef2cef8e12906664faa5_1afa0f4be91466ef2cef8e12906664faa5" kind="function"><name>GetEvents</name></member>
+    <member refid="class_native_display_manager_1_1_display_a8fee8d5c3bd59173542da741a100ec9f_1a8fee8d5c3bd59173542da741a100ec9f" kind="function"><name>Load</name></member>
+    <member refid="class_native_display_manager_1_1_display_a4c52a2b884c0b06afcb720a50735cf96_1a4c52a2b884c0b06afcb720a50735cf96" kind="function"><name>Unload</name></member>
+    <member refid="class_native_display_manager_1_1_display_aac260aaf17e6840c8115ca5a8feb18c7_1aac260aaf17e6840c8115ca5a8feb18c7" kind="function"><name>SetFullScreen</name></member>
+    <member refid="class_native_display_manager_1_1_display_aa9f1afd15d8e889c6a3aab7701acc695_1aa9f1afd15d8e889c6a3aab7701acc695" kind="function"><name>SwapFrontAndBack</name></member>
+    <member refid="class_native_display_manager_1_1_display_aeeb46ab1545f1ed854eeebc83ce13388_1aeeb46ab1545f1ed854eeebc83ce13388" kind="function"><name>MakeOldOpenGLContext</name></member>
+    <member refid="class_native_display_manager_1_1_display_a0946a103227630284d23e14c297c3058_1a0946a103227630284d23e14c297c3058" kind="function"><name>MakeOpenGLContext</name></member>
+    <member refid="class_native_display_manager_1_1_display_a5af22307e0d39325ac1de0ea7ae39ce9_1a5af22307e0d39325ac1de0ea7ae39ce9" kind="function"><name>DeleteOpenGLContext</name></member>
+    <member refid="class_native_display_manager_1_1_display_a82c5ba98fe6191b918a51b80b0457229_1a82c5ba98fe6191b918a51b80b0457229" kind="function"><name>SetTitle</name></member>
+    <member refid="class_native_display_manager_1_1_display_a181be870f1f01e73e13f6692e2cdb55a_1a181be870f1f01e73e13f6692e2cdb55a" kind="function"><name>SetCursorPosition</name></member>
+    <member refid="class_native_display_manager_1_1_display_aeadb585297797bf7dce9b239bf306604_1aeadb585297797bf7dce9b239bf306604" kind="function"><name>SetCursorPositionToCenter</name></member>
+    <member refid="class_native_display_manager_1_1_display_af4db0812a7c408f951c49783463491eb_1af4db0812a7c408f951c49783463491eb" kind="function"><name>SetCursorVisible</name></member>
+    <member refid="class_native_display_manager_1_1_display_aa4470000e565cf3340108e85e715cffa_1aa4470000e565cf3340108e85e715cffa" kind="function"><name>SetVisible</name></member>
+    <member refid="class_native_display_manager_1_1_display_adaf64238a91cb2d0dca46c51df2cf298_1adaf64238a91cb2d0dca46c51df2cf298" kind="function"><name>Close</name></member>
+    <member refid="class_native_display_manager_1_1_display_a60c059722792d1bd7d16a3e4a5d2cc93_1a60c059722792d1bd7d16a3e4a5d2cc93" kind="function"><name>SetX</name></member>
+    <member refid="class_native_display_manager_1_1_display_a8fb12f5458845b50d3cbe45b3a31201f_1a8fb12f5458845b50d3cbe45b3a31201f" kind="function"><name>SetY</name></member>
+    <member refid="class_native_display_manager_1_1_display_ad7af4c4009ef8d5b78f508898889877e_1ad7af4c4009ef8d5b78f508898889877e" kind="function"><name>SetWidth</name></member>
+    <member refid="class_native_display_manager_1_1_display_adaa971578cda69306f585a92476ba955_1adaa971578cda69306f585a92476ba955" kind="function"><name>SetHeight</name></member>
+    <member refid="class_native_display_manager_1_1_display_abe318112a787dde66f3bfe4a05416435_1abe318112a787dde66f3bfe4a05416435" kind="function"><name>HasFocus</name></member>
+    <member refid="class_native_display_manager_1_1_display_abadb1acf0efbdafdf942cf247d67fa55_1abadb1acf0efbdafdf942cf247d67fa55" kind="function"><name>GetX</name></member>
+    <member refid="class_native_display_manager_1_1_display_adecb43bc1a19cf59d08096c68ef63b1d_1adecb43bc1a19cf59d08096c68ef63b1d" kind="function"><name>GetY</name></member>
+    <member refid="class_native_display_manager_1_1_display_affc8751be206a4d481d57e3e8a570e89_1affc8751be206a4d481d57e3e8a570e89" kind="function"><name>GetWidth</name></member>
+    <member refid="class_native_display_manager_1_1_display_a60c77c5d34b5cc57970fce11abbe8fbe_1a60c77c5d34b5cc57970fce11abbe8fbe" kind="function"><name>GetHeight</name></member>
+    <member refid="class_native_display_manager_1_1_display_af58b9fdfb1d0ffa3d9336dd79c15272b_1af58b9fdfb1d0ffa3d9336dd79c15272b" kind="function"><name>IsKeyPressed</name></member>
+    <member refid="class_native_display_manager_1_1_display_a53e98852715f558dee5c800c11d71625_1a53e98852715f558dee5c800c11d71625" kind="function"><name>IsKeyReleased</name></member>
+    <member refid="class_native_display_manager_1_1_display_a5cc94280f5844260a45e75b638d26431_1a5cc94280f5844260a45e75b638d26431" kind="function"><name>AddKeyPressed</name></member>
+    <member refid="class_native_display_manager_1_1_display_ae7b968b5acf3be8f976c90e5564c6a6c_1ae7b968b5acf3be8f976c90e5564c6a6c" kind="function"><name>AddKeyReleased</name></member>
+  </compound>
+  <compound refid="struct_native_display_manager_1_1_display_events" kind="struct"><name>NativeDisplayManager::DisplayEvents</name>
+    <member refid="struct_native_display_manager_1_1_display_events_a803a11c06c13922fc822497e4a069a3b_1a803a11c06c13922fc822497e4a069a3b" kind="variable"><name>m_keys_down</name></member>
+    <member refid="struct_native_display_manager_1_1_display_events_ae43a0fc4438faccee84eafdbe4b031b4_1ae43a0fc4438faccee84eafdbe4b031b4" kind="variable"><name>m_keys_up</name></member>
+    <member refid="struct_native_display_manager_1_1_display_events_a975fb93edad6839604795c03e95d48af_1a975fb93edad6839604795c03e95d48af" kind="variable"><name>previous_mouse_x</name></member>
+    <member refid="struct_native_display_manager_1_1_display_events_a43be981ccd50ab2f5bf0b0b755ecb512_1a43be981ccd50ab2f5bf0b0b755ecb512" kind="variable"><name>previous_mouse_y</name></member>
+    <member refid="struct_native_display_manager_1_1_display_events_ae485220aea907d66b20b65a56e0f453a_1ae485220aea907d66b20b65a56e0f453a" kind="variable"><name>mouse_x</name></member>
+    <member refid="struct_native_display_manager_1_1_display_events_a4058f160b01b48a44064ec65d455ed19_1a4058f160b01b48a44064ec65d455ed19" kind="variable"><name>mouse_y</name></member>
+    <member refid="struct_native_display_manager_1_1_display_events_ab09e15e1687fc3dc2e968508ac2b0ed5_1ab09e15e1687fc3dc2e968508ac2b0ed5" kind="variable"><name>mouse_direction_x</name></member>
+    <member refid="struct_native_display_manager_1_1_display_events_a472e5037de31c7b176cabb648de39f76_1a472e5037de31c7b176cabb648de39f76" kind="variable"><name>mouse_direction_y</name></member>
+    <member refid="struct_native_display_manager_1_1_display_events_a07e5041e6188f45dee5fe73a1798cfe7_1a07e5041e6188f45dee5fe73a1798cfe7" kind="variable"><name>resized</name></member>
+    <member refid="struct_native_display_manager_1_1_display_events_a47160b7a77ec8948d97645a7575bbc35_1a47160b7a77ec8948d97645a7575bbc35" kind="variable"><name>closed</name></member>
+    <member refid="struct_native_display_manager_1_1_display_events_a748bdff2349bff3c29846d6e59ad6a96_1a748bdff2349bff3c29846d6e59ad6a96" kind="variable"><name>minimized</name></member>
+    <member refid="struct_native_display_manager_1_1_display_events_a713a52755eecbe56fa4b5b72773fd3ea_1a713a52755eecbe56fa4b5b72773fd3ea" kind="variable"><name>maximized</name></member>
+    <member refid="struct_native_display_manager_1_1_display_events_a14cbf34bb641ef087a40eec00f6861d0_1a14cbf34bb641ef087a40eec00f6861d0" kind="variable"><name>moved</name></member>
+    <member refid="struct_native_display_manager_1_1_display_events_a1f929d216bbd93266db4b69e3daccffb_1a1f929d216bbd93266db4b69e3daccffb" kind="variable"><name>moused_moved</name></member>
+    <member refid="struct_native_display_manager_1_1_display_events_a79ef673051de5484a036626c4fb66a8f_1a79ef673051de5484a036626c4fb66a8f" kind="variable"><name>language_changed</name></member>
+    <member refid="struct_native_display_manager_1_1_display_events_a6ff1be878580c1c72dff6277fca077f8_1a6ff1be878580c1c72dff6277fca077f8" kind="variable"><name>left_mouse_pressed</name></member>
+    <member refid="struct_native_display_manager_1_1_display_events_a926fdb2bab37f49ef6384d3d74171ebd_1a926fdb2bab37f49ef6384d3d74171ebd" kind="variable"><name>right_mouse_pressed</name></member>
+    <member refid="struct_native_display_manager_1_1_display_events_a259dcbfb2a93c8ccd05c5c2510f621f4_1a259dcbfb2a93c8ccd05c5c2510f621f4" kind="variable"><name>middle_mouse_pressed</name></member>
+    <member refid="struct_native_display_manager_1_1_display_events_abf10fed151ba57f81a2f4a9012186261_1abf10fed151ba57f81a2f4a9012186261" kind="variable"><name>left_mouse_released</name></member>
+    <member refid="struct_native_display_manager_1_1_display_events_a878375484137d9e3f8a4b5705e68af9b_1a878375484137d9e3f8a4b5705e68af9b" kind="variable"><name>right_mouse_released</name></member>
+    <member refid="struct_native_display_manager_1_1_display_events_a7d8279e0c8420529bf4899e15b18aee9_1a7d8279e0c8420529bf4899e15b18aee9" kind="variable"><name>middle_mouse_released</name></member>
+  </compound>
+  <compound refid="struct_native_display_manager_1_1_monitor_info" kind="struct"><name>NativeDisplayManager::MonitorInfo</name>
+    <member refid="struct_native_display_manager_1_1_monitor_info_aec7b7bcaa9302ee812a49b8c3b009998_1aec7b7bcaa9302ee812a49b8c3b009998" kind="variable"><name>name</name></member>
+    <member refid="struct_native_display_manager_1_1_monitor_info_a440847460487b1fb93b221178e0acce0_1a440847460487b1fb93b221178e0acce0" kind="variable"><name>width</name></member>
+    <member refid="struct_native_display_manager_1_1_monitor_info_a0508891fc086b53f9a5ec4b471458823_1a0508891fc086b53f9a5ec4b471458823" kind="variable"><name>height</name></member>
+  </compound>
+  <compound refid="namespace_native_display_manager" kind="namespace"><name>NativeDisplayManager</name>
+    <member refid="monitor_8hpp_abd09fa34bc3afa52bab84099ed6fceca_1abd09fa34bc3afa52bab84099ed6fceca" kind="function"><name>RetrieveMonitors</name></member>
+  </compound>
+  <compound refid="display_8hpp" kind="file"><name>display.hpp</name>
+  </compound>
+  <compound refid="monitor_8hpp" kind="file"><name>monitor.hpp</name>
+  </compound>
+  <compound refid="os__defines_8hpp" kind="file"><name>os_defines.hpp</name>
+  </compound>
+  <compound refid="dir_09e761304027c904456130627fd4dcf5" kind="dir"><name>includes</name>
+  </compound>
+  <compound refid="dir_ba931fd68ff633a65e2cacd19cf76731" kind="dir"><name>includes/ndm</name>
+  </compound>
+</doxygenindex>

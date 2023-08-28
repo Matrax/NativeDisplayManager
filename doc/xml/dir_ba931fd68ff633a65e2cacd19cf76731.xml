@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="dir_ba931fd68ff633a65e2cacd19cf76731" kind="dir">
+    <compoundname>includes/ndm</compoundname>
+    <innerfile refid="display_8hpp">display.hpp</innerfile>
+    <innerfile refid="monitor_8hpp">monitor.hpp</innerfile>
+    <innerfile refid="os__defines_8hpp">os_defines.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="includes/ndm/"/>
+  </compounddef>
+</doxygen>

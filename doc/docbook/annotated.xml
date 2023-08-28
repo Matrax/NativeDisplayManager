@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_annotated" xml:lang="en-US">
+<title>Class List</title>
+Here are the classes, structs, unions and interfaces with brief descriptions:<link linkend="_class_native_display_manager_1_1_display">NativeDisplayManager::Display</link>
+<para>There is no default implementation of this class, some methods need to be defined in an other class for each systems, also, some methods are shared by all the OS and are already defined in this header </para>
+<link linkend="_struct_native_display_manager_1_1_display_events">NativeDisplayManager::DisplayEvents</link>
+<para>This structure represent all the events happening during the execution by a display, getters for all of them are defined in the display class directly, all implementations must use this structure to report all the following events : </para>
+<link linkend="_struct_native_display_manager_1_1_monitor_info">NativeDisplayManager::MonitorInfo</link></section>

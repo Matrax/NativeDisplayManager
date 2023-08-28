@@ -1,113 +1,81 @@
-#pragma once
-
 // Only compile on Windows (x32 or x64)
 #if defined(_WIN32) || defined(_WIN64)
 
 // NativeDisplayManager includes
 #include <ndm/display.hpp>
 
-namespace NativeDisplayManager
+LRESULT CALLBACK Win32ProcessEvent(HWND handle, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	LRESULT CALLBACK Display::WindowProcessEvent(HWND handle, UINT message, WPARAM wParam, LPARAM lParam)
+	NativeDisplayManager::Display * current_display = (NativeDisplayManager::Display *) GetWindowLongPtr(handle, GWLP_USERDATA);
+	if(current_display == nullptr)
+		return DefWindowProc(handle, message, wParam, lParam);
+	NativeDisplayManager::DisplayEvents & events = current_display->GetEvents();
+	
+	switch (message)
 	{
-		// Get the display instance
-		Display* display = Display::GLOBAL_INSTANCE;
-		if (display == nullptr)
-			return DefWindowProc(handle, message, wParam, lParam);
-
-		// Get mouse x and y position
-		const int xPos = static_cast<int>(GET_X_LPARAM(lParam));
-		const int yPos = static_cast<int>(GET_Y_LPARAM(lParam));
-
-		// Check messages
-		switch (message)
-		{
-		case WM_MOUSEMOVE:
-			display->m_events.moused_moved = true;
-			display->m_events.previous_mouse_x = display->m_events.mouse_x;
-			display->m_events.previous_mouse_y = display->m_events.mouse_y;
-			display->m_events.mouse_x = xPos;
-			display->m_events.mouse_y = yPos;
-			display->m_events.mouse_direction_x = display->m_events.mouse_x - display->m_events.previous_mouse_x;
-			display->m_events.mouse_direction_y = display->m_events.mouse_y - display->m_events.previous_mouse_y;
+		case WM_CLOSE:
+			events.closed = true;
 			break;
-		case WM_DESTROY:
-			display->m_events.closed = true;
+		case WM_MOUSEMOVE:
+			events.moused_moved = true;
+			events.previous_mouse_x = events.mouse_x;
+			events.previous_mouse_y = events.mouse_y;
+			events.mouse_x = static_cast<int>(LOWORD(lParam));
+			events.mouse_y = static_cast<int>(HIWORD(lParam));
+			events.mouse_direction_x = events.mouse_x - events.previous_mouse_x;
+			events.mouse_direction_y = events.mouse_y - events.previous_mouse_y;
 			break;
 		case WM_SIZE:
 			if (wParam == SIZE_RESTORED)
-				display->m_events.resized = true;
+				events.resized = true;
 			if (wParam == SIZE_MINIMIZED)
-				display->m_events.minimized = true;
+				events.minimized = true;
 			if (wParam == SIZE_MAXIMIZED)
-				display->m_events.maximized = true;
+				events.maximized = true;
 			break;
 		case WM_MOVE:
-			display->m_events.moved = true;
+			events.moved = true;
 			break;
 		case WM_INPUTLANGCHANGE:
-			display->m_events.language_changed = true;
+			events.language_changed = true;
 			break;
 		case WM_KEYDOWN:
-			display->AddKeyPressed((int) wParam);
+			current_display->AddKeyPressed((int) wParam);
 			break;
 		case WM_KEYUP:
-			display->AddKeyReleased((int) wParam);
+			current_display->AddKeyReleased((int) wParam);
 			break;
 		case WM_LBUTTONDOWN:
-			display->m_events.left_mouse_pressed = true;
-			display->m_events.left_mouse_released = false;
+			events.left_mouse_pressed = true;
+			events.left_mouse_released = false;
 			break;
 		case WM_LBUTTONUP:
-			display->m_events.left_mouse_pressed = false;
-			display->m_events.left_mouse_released = true;
+			events.left_mouse_pressed = false;
+			events.left_mouse_released = true;
 			break;
 		case WM_RBUTTONDOWN:
-			display->m_events.right_mouse_pressed = true;
-			display->m_events.right_mouse_released = false;
+			events.right_mouse_pressed = true;
+			events.right_mouse_released = false;
 			break;
 		case WM_RBUTTONUP:
-			display->m_events.right_mouse_pressed = false;
-			display->m_events.right_mouse_released = true;
+			events.right_mouse_pressed = false;
+			events.right_mouse_released = true;
 			break;
 		case WM_MBUTTONDOWN:
-			display->m_events.middle_mouse_pressed = true;
-			display->m_events.middle_mouse_released = false;
+			events.middle_mouse_pressed = true;
+			events.middle_mouse_released = false;
 			break;
 		case WM_MBUTTONUP:
-			display->m_events.middle_mouse_pressed = false;
-			display->m_events.middle_mouse_released = true;
+			events.middle_mouse_pressed = false;
+			events.middle_mouse_released = true;
 			break;
-		}
-
-		return DefWindowProc(handle, message, wParam, lParam);
 	}
 
-	BOOL CALLBACK Display::MonitorProcess(HMONITOR hMon, HDC hdc, LPRECT lprcMonitor, LPARAM pData)
-	{
-		MONITORINFOEX monitor_info = {};
-		monitor_info.cbSize = sizeof(MONITORINFOEX);
-		GetMonitorInfo(hMon, &monitor_info);
+	return DefWindowProc(handle, message, wParam, lParam);
+}
 
-		MonitorInfo info = {};
-		info.name = std::string((char *) monitor_info.szDevice);
-		info.width = lprcMonitor->right - lprcMonitor->left;
-		info.height = lprcMonitor->bottom - lprcMonitor->top;
-		Display::monitors.push_back(info);
-
-		return TRUE;
-	}
-
-	std::vector<MonitorInfo> Display::GetMonitors()
-	{
-		Display::monitors.clear();
-
-		if(EnumDisplayMonitors(NULL, NULL, MonitorProcess, NULL) == 0)
-			throw std::runtime_error("Can't enumerate all the monitors !");
-		
-		return Display::monitors;
-	}
-
+namespace NativeDisplayManager
+{
 	void Display::Load(const std::string_view title, const int width, const int height, const bool visible)
 	{
 		if (m_loaded == true)
@@ -118,29 +86,37 @@ namespace NativeDisplayManager
 		if (m_instance == nullptr)
 			throw std::runtime_error("Can't retrieve the HINSTANCE of the application !");
 
-		// Register Win32 class
 		WNDCLASSEX window_class = {};
 		SecureZeroMemory(&window_class, sizeof(WNDCLASSEX));
-		window_class.lpszClassName = TEXT("NativeDisplayManagerClass");
-		window_class.cbSize = sizeof(WNDCLASSEX);
-		window_class.lpfnWndProc = Display::WindowProcessEvent;
-		window_class.hInstance = m_instance;
-		window_class.hbrBackground = (HBRUSH)(1 + COLOR_WINDOW);
-		window_class.style = CS_OWNDC;
-		window_class.hCursor = LoadCursor(NULL, IDC_ARROW);
-		window_class.hIcon = LoadIcon(NULL, IDI_APPLICATION);
 
-		if (RegisterClassEx(&window_class) == 0)
-			throw std::runtime_error("Error on register the windows class !");
+		if(GetClassInfoEx(m_instance, TEXT("NativeDisplayManagerClass"), &window_class) == 0)
+		{
+			// Register Win32 class
+			
+			window_class.lpszClassName = TEXT("NativeDisplayManagerClass");
+			window_class.cbSize = sizeof(WNDCLASSEX);
+			window_class.lpfnWndProc = Win32ProcessEvent;
+			window_class.hInstance = m_instance;
+			window_class.hbrBackground = (HBRUSH)(1 + COLOR_WINDOW);
+			window_class.style = CS_OWNDC;
+			window_class.hCursor = LoadCursor(NULL, IDC_ARROW);
+			window_class.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+
+			if (RegisterClassEx(&window_class) == 0)
+				throw std::runtime_error("Error on register the windows class !");
+		}
 
 		// Create the window
 		m_handle = CreateWindowEx(0, TEXT("NativeDisplayManagerClass"), TEXT("Application"),
-			WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
-			width, height,
-			nullptr, nullptr, m_instance, nullptr);
+								WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
+								width, height,
+								nullptr, nullptr, m_instance, nullptr);
 
 		if (m_handle == nullptr)
 			throw std::runtime_error("Error on create the window !");
+
+		// Set USERDATA of the window handle to retrieve the display pointer in the window procedure.
+		SetWindowLongPtr(m_handle, GWLP_USERDATA, (LONG_PTR) this);
 
 		// Clear structs
 		SecureZeroMemory(&m_events, sizeof(DisplayEvents));
@@ -191,24 +167,14 @@ namespace NativeDisplayManager
 	}
 
 	// Get the events of the window
-	DisplayEvents& Display::GetEvents() noexcept
+	DisplayEvents & Display::CatchEvents() noexcept
 	{
-		// Clear events
-		m_events.closed = false;
-		m_events.maximized = false;
-		m_events.minimized = false;
-		m_events.resized = false;
-		m_events.moved = false;
-		m_events.language_changed = false;
-		m_events.moused_moved = false;
-		m_events.mouse_direction_x = 0;
-		m_events.mouse_direction_y = 0;
-
-		// Clear messages
+		// Clear events and messages
+		SecureZeroMemory(&m_events, sizeof(DisplayEvents));
 		SecureZeroMemory(&m_messages, sizeof(MSG));
 
 		// While there are windows messages, we dipatch them
-		while (PeekMessage(&m_messages, nullptr, 0, 0, PM_REMOVE))
+		while (PeekMessage(&m_messages, m_handle, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&m_messages);
 			DispatchMessage(&m_messages);
@@ -222,8 +188,8 @@ namespace NativeDisplayManager
 		if (m_loaded == true && m_device_context != nullptr)
 		{
 			// Set the swap interval
-			if (Display::wglSwapIntervalEXT != nullptr)
-				Display::wglSwapIntervalEXT(swap_interval);
+			if (wglSwapIntervalEXT != nullptr)
+				wglSwapIntervalEXT(swap_interval);
 
 			// Swap the back and front
 			SwapBuffers(m_device_context);
@@ -278,7 +244,7 @@ namespace NativeDisplayManager
 		WNDCLASSEX fake_window_class = {};
 		SecureZeroMemory(&fake_window_class, sizeof(WNDCLASSEX));
 		fake_window_class.lpszClassName = TEXT("FakeWindow");
-		fake_window_class.lpfnWndProc = Display::WindowProcessEvent;
+		fake_window_class.lpfnWndProc = Win32ProcessEvent;
 		fake_window_class.hInstance = m_instance;
 		fake_window_class.cbSize = sizeof(WNDCLASSEX);
 		fake_window_class.hbrBackground = (HBRUSH)(1 + COLOR_WINDOW);
@@ -323,19 +289,17 @@ namespace NativeDisplayManager
 			throw std::runtime_error("Can't make the fake OpenGL context !");
 
 		// Get WGL extensions functions
-		if (Display::wglChoosePixelFormatARB == nullptr
-			|| Display::wglCreateContextAttribsARB == nullptr
-			|| Display::wglSwapIntervalEXT == nullptr)
+		if (wglChoosePixelFormatARB == nullptr || wglCreateContextAttribsARB == nullptr || wglSwapIntervalEXT == nullptr)
 		{
-			Display::wglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
+			wglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
 			if (*wglChoosePixelFormatARB == nullptr)
 				throw std::runtime_error("Can't get the wglChoosePixelFormatARB function !");
 
-			Display::wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
+			wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
 			if (*wglCreateContextAttribsARB == nullptr)
 				throw std::runtime_error("Can't get the wglCreateContextAttribsARB function !");
 
-			Display::wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
+			wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
 			if (*wglSwapIntervalEXT == nullptr)
 				throw std::runtime_error("Can't get the wglSwapIntervalEXT function !");
 		}
@@ -356,9 +320,7 @@ namespace NativeDisplayManager
 			throw std::runtime_error("Error on unregister the fake window !");
 
 		// Check if the functions are here
-		if (Display::wglChoosePixelFormatARB == nullptr ||
-			Display::wglCreateContextAttribsARB == nullptr ||
-			Display::wglSwapIntervalEXT == nullptr)
+		if (wglChoosePixelFormatARB == nullptr || wglCreateContextAttribsARB == nullptr || wglSwapIntervalEXT == nullptr)
 			throw std::runtime_error("Can't get the WGL extensions functions !");
 
 		// Make good OpenGL context
@@ -388,7 +350,7 @@ namespace NativeDisplayManager
 
 		int pixel_format = -1;
 		unsigned int number_of_formats = 0;
-		if (Display::wglChoosePixelFormatARB(m_device_context, pixel_format_attributes, nullptr, 1, &pixel_format, &number_of_formats) == FALSE)
+		if (wglChoosePixelFormatARB(m_device_context, pixel_format_attributes, nullptr, 1, &pixel_format, &number_of_formats) == FALSE)
 			throw std::runtime_error("Can't set the pixel format !");
 
 		PIXELFORMATDESCRIPTOR pixel_format_descriptor = {};
@@ -399,7 +361,7 @@ namespace NativeDisplayManager
 		if (SetPixelFormat(m_device_context, pixel_format, &pixel_format_descriptor) == false)
 			throw std::runtime_error("Can't set the pixel format !");
 
-		m_gl_device_context = Display::wglCreateContextAttribsARB(m_device_context, nullptr, context_attributes);
+		m_gl_device_context = wglCreateContextAttribsARB(m_device_context, nullptr, context_attributes);
 		if (m_gl_device_context == nullptr)
 			throw std::runtime_error("Can't create the OpenGL context !");
 
@@ -424,10 +386,6 @@ namespace NativeDisplayManager
 	{
 		if (m_loaded == false)
 			throw std::runtime_error("Can't unload a window that is already unloaded !");
-
-		// Unregister class
-		if (UnregisterClass(TEXT("NativeDisplayManagerClass"), m_instance) == 0)
-			throw std::runtime_error("Error on unregister the window !");
 
 		m_loaded = false;
 	}

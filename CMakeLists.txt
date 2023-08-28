@@ -12,19 +12,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(NDM_LIB_NAME "NativeDisplayManager")
 set(NDM_LIB_VERSION 1.0)
 set(NDM_INCLUDES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/includes")
-set(NDM_WIN32_SOURCES "sources/win32_display_impl.cpp")
+set(NDM_WIN32_SOURCES "sources/win32_display_impl.cpp" 
+                      "sources/win32_monitor_impl.cpp")
 set(NDM_WIN32_LIBRARIES "opengl32.lib")
 set(NDM_WIN32_TESTS "tests/win32_opengl_test.cpp")
 
-# Build type
-if(NOT DEFINED ENV{CMAKE_BUILD_TYPE})
-    message(STATUS "Set build type to debug")
-    set(CMAKE_BUILD_TYPE "Debug")
-endif()
-
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(CMAKE_WIN32_EXECUTABLE False)
-endif()
 
 # Project
 project(${NDM_LIB_NAME}

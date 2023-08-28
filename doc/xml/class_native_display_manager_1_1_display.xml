@@ -1,0 +1,1011 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="class_native_display_manager_1_1_display" kind="class" language="C++" prot="public">
+    <compoundname>NativeDisplayManager::Display</compoundname>
+    <includes refid="display_8hpp" local="no">display.hpp</includes>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_native_display_manager_1_1_display_1a9e3df1e2854b137d94a4d8351e5f731b" prot="private" static="no" mutable="no">
+        <type><ref refid="struct_native_display_manager_1_1_display_events" kindref="compound">DisplayEvents</ref></type>
+        <definition>DisplayEvents NativeDisplayManager::Display::m_events</definition>
+        <argsstring></argsstring>
+        <name>m_events</name>
+        <qualifiedname>NativeDisplayManager::Display::m_events</qualifiedname>
+        <initializer>= {}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="62" column="15" bodyfile="includes/ndm/display.hpp" bodystart="62" bodyend="62"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_native_display_manager_1_1_display_1adedd245d7ed902e5c2e512664c6116ea" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool NativeDisplayManager::Display::m_loaded</definition>
+        <argsstring></argsstring>
+        <name>m_loaded</name>
+        <qualifiedname>NativeDisplayManager::Display::m_loaded</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="63" column="6" bodyfile="includes/ndm/display.hpp" bodystart="63" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_a4cd7d842644296a04e13e128b7c7f349_1a4cd7d842644296a04e13e128b7c7f349" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>NativeDisplayManager::Display::Display</definition>
+        <argsstring>()</argsstring>
+        <name>Display</name>
+        <qualifiedname>NativeDisplayManager::Display::Display</qualifiedname>
+        <briefdescription>
+<para>Constructor of this class. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This class is a singleton so if a display already exist, an exception is thrown. If not, the global instance is set. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="80" column="1" bodyfile="includes/ndm/display.hpp" bodystart="80" bodyend="80"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_1a4319cd1e3c3ef469119ed7da57f5b60b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>NativeDisplayManager::Display::Display</definition>
+        <argsstring>(Display &amp;)=delete</argsstring>
+        <name>Display</name>
+        <qualifiedname>NativeDisplayManager::Display::Display</qualifiedname>
+        <param>
+          <type><ref refid="class_native_display_manager_1_1_display" kindref="compound">Display</ref> &amp;</type>
+        </param>
+        <briefdescription>
+<para>No copy constructor. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="85" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_1a4cc9c3270443f3577cf8969eea4e5ccf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>NativeDisplayManager::Display::Display</definition>
+        <argsstring>(const Display &amp;)=delete</argsstring>
+        <name>Display</name>
+        <qualifiedname>NativeDisplayManager::Display::Display</qualifiedname>
+        <param>
+          <type>const <ref refid="class_native_display_manager_1_1_display" kindref="compound">Display</ref> &amp;</type>
+        </param>
+        <briefdescription>
+<para>No copy constructor. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="90" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_a70df3bb748a7057c496aa10152f39b23_1a70df3bb748a7057c496aa10152f39b23" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>NativeDisplayManager::Display::~Display</definition>
+        <argsstring>()</argsstring>
+        <name>~Display</name>
+        <qualifiedname>NativeDisplayManager::Display::~Display</qualifiedname>
+        <briefdescription>
+<para>Destructor of this class. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>If the display is loaded, the destructor unload the display, and then release the global instance. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="96" column="1" bodyfile="includes/ndm/display.hpp" bodystart="96" bodyend="100"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_aff2fd3b39135ce1211d25925af7f6fd1_1aff2fd3b39135ce1211d25925af7f6fd1" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type><ref refid="struct_native_display_manager_1_1_display_events" kindref="compound">DisplayEvents</ref> &amp;</type>
+        <definition>DisplayEvents &amp; NativeDisplayManager::Display::CatchEvents</definition>
+        <argsstring>() noexcept</argsstring>
+        <name>CatchEvents</name>
+        <qualifiedname>NativeDisplayManager::Display::CatchEvents</qualifiedname>
+        <briefdescription>
+<para>This method must return all the events catched. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method need to be implemented for each OS. <simplesect kind="return"><para><ref refid="struct_native_display_manager_1_1_display_events" kindref="compound">DisplayEvents</ref>&amp; The events structure </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="107" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_afa0f4be91466ef2cef8e12906664faa5_1afa0f4be91466ef2cef8e12906664faa5" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="struct_native_display_manager_1_1_display_events" kindref="compound">DisplayEvents</ref> &amp;</type>
+        <definition>DisplayEvents &amp; NativeDisplayManager::Display::GetEvents</definition>
+        <argsstring>() noexcept</argsstring>
+        <name>GetEvents</name>
+        <qualifiedname>NativeDisplayManager::Display::GetEvents</qualifiedname>
+        <briefdescription>
+<para>This method return the internal events struct. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para><ref refid="struct_native_display_manager_1_1_display_events" kindref="compound">DisplayEvents</ref>&amp; The events structure </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="113" column="16" bodyfile="includes/ndm/display.hpp" bodystart="113" bodyend="116"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_a8fee8d5c3bd59173542da741a100ec9f_1a8fee8d5c3bd59173542da741a100ec9f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void NativeDisplayManager::Display::Load</definition>
+        <argsstring>(const std::string_view title, const int width, const int height, const bool visible=false)</argsstring>
+        <name>Load</name>
+        <qualifiedname>NativeDisplayManager::Display::Load</qualifiedname>
+        <param>
+          <type>const std::string_view</type>
+          <declname>title</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>width</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>height</declname>
+        </param>
+        <param>
+          <type>const bool</type>
+          <declname>visible</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+<para>This method load the display. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method need to be implemented for each OS. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>title</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The title of the display. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>width</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The width of the display on the screen. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>height</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The height of the display on the screen. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="125" column="6"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_a4c52a2b884c0b06afcb720a50735cf96_1a4c52a2b884c0b06afcb720a50735cf96" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void NativeDisplayManager::Display::Unload</definition>
+        <argsstring>()</argsstring>
+        <name>Unload</name>
+        <qualifiedname>NativeDisplayManager::Display::Unload</qualifiedname>
+        <briefdescription>
+<para>This method unload the display by releasing all the associated resources. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method need to be implemented for each OS. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="131" column="6"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_aac260aaf17e6840c8115ca5a8feb18c7_1aac260aaf17e6840c8115ca5a8feb18c7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void NativeDisplayManager::Display::SetFullScreen</definition>
+        <argsstring>(const bool fullscreen)</argsstring>
+        <name>SetFullScreen</name>
+        <qualifiedname>NativeDisplayManager::Display::SetFullScreen</qualifiedname>
+        <param>
+          <type>const bool</type>
+          <declname>fullscreen</declname>
+        </param>
+        <briefdescription>
+<para>This method set the display on full screen mode or not. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method need to be implemented for each OS. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>fullscreen</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If the full screen mode is activated or not. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="138" column="6"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_aa9f1afd15d8e889c6a3aab7701acc695_1aa9f1afd15d8e889c6a3aab7701acc695" prot="public" static="no" const="yes" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void NativeDisplayManager::Display::SwapFrontAndBack</definition>
+        <argsstring>(const int swap_interval) const noexcept</argsstring>
+        <name>SwapFrontAndBack</name>
+        <qualifiedname>NativeDisplayManager::Display::SwapFrontAndBack</qualifiedname>
+        <param>
+          <type>const int</type>
+          <declname>swap_interval</declname>
+        </param>
+        <briefdescription>
+<para>This method swap the back and front buffer of the display if the display used double buffering. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method need to be implemented for each OS. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>fullscreen</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The time interval between two swap (0 = no vsync, 1 = vsync). </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="145" column="6"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_aeeb46ab1545f1ed854eeebc83ce13388_1aeeb46ab1545f1ed854eeebc83ce13388" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void NativeDisplayManager::Display::MakeOldOpenGLContext</definition>
+        <argsstring>(const bool double_buffer, const int color_bits, const int depth_bits, const int stencil_bits)</argsstring>
+        <name>MakeOldOpenGLContext</name>
+        <qualifiedname>NativeDisplayManager::Display::MakeOldOpenGLContext</qualifiedname>
+        <param>
+          <type>const bool</type>
+          <declname>double_buffer</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>color_bits</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>depth_bits</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>stencil_bits</declname>
+        </param>
+        <briefdescription>
+<para>This method create an OpenGL context in an old way. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>If the creation of the OpenGL context cannot be done, an exception is thrown. This method need to be implemented for each OS. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>double_buffer</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Use double buffering. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>color_bits</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of bits to represent a color on the color buffer. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>depth_bits</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of bits to represent a data on the depth buffer. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>depth_bits</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of bits to represent a data on the stencil buffer. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="156" column="6"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_a0946a103227630284d23e14c297c3058_1a0946a103227630284d23e14c297c3058" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void NativeDisplayManager::Display::MakeOpenGLContext</definition>
+        <argsstring>(const int major_version, const int minor_version, const bool double_buffer, const int color_bits, const int alpha_bits, const int depth_bits, const int stencil_bits, const bool samples_buffers, const int samples)</argsstring>
+        <name>MakeOpenGLContext</name>
+        <qualifiedname>NativeDisplayManager::Display::MakeOpenGLContext</qualifiedname>
+        <param>
+          <type>const int</type>
+          <declname>major_version</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>minor_version</declname>
+        </param>
+        <param>
+          <type>const bool</type>
+          <declname>double_buffer</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>color_bits</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>alpha_bits</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>depth_bits</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>stencil_bits</declname>
+        </param>
+        <param>
+          <type>const bool</type>
+          <declname>samples_buffers</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>samples</declname>
+        </param>
+        <briefdescription>
+<para>This method create an OpenGL context. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>If the creation of the OpenGL context cannot be done, an exception is thrown. This method need to be implemented for each OS. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>major_version</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The OpenGL context major version to load. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>minor_version</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The OpenGL context minor version to load. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>double_buffer</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Use double buffering. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>color_bits</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of bits to represent a color on the color buffer. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>alpha_bits</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of bits to represent the alpha channel on the color buffer. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>depth_bits</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of bits to represent a data on the depth buffer. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>stencil_bits</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of bits to represent a data on the stencil buffer. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>samples_buffers</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Use samples in the buffers. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>samples</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of samples. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="172" column="6"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_a5af22307e0d39325ac1de0ea7ae39ce9_1a5af22307e0d39325ac1de0ea7ae39ce9" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void NativeDisplayManager::Display::DeleteOpenGLContext</definition>
+        <argsstring>() const</argsstring>
+        <name>DeleteOpenGLContext</name>
+        <qualifiedname>NativeDisplayManager::Display::DeleteOpenGLContext</qualifiedname>
+        <briefdescription>
+<para>This method delete the current OpenGL context. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method need to be implemented for each OS. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="179" column="6"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_a82c5ba98fe6191b918a51b80b0457229_1a82c5ba98fe6191b918a51b80b0457229" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void NativeDisplayManager::Display::SetTitle</definition>
+        <argsstring>(const std::string_view title)</argsstring>
+        <name>SetTitle</name>
+        <qualifiedname>NativeDisplayManager::Display::SetTitle</qualifiedname>
+        <param>
+          <type>const std::string_view</type>
+          <declname>title</declname>
+        </param>
+        <briefdescription>
+<para>This method set the title of the display. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method need to be implemented for each OS. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>title</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The new title of the display. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="186" column="6"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_a181be870f1f01e73e13f6692e2cdb55a_1a181be870f1f01e73e13f6692e2cdb55a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void NativeDisplayManager::Display::SetCursorPosition</definition>
+        <argsstring>(const unsigned long x, const unsigned long y)</argsstring>
+        <name>SetCursorPosition</name>
+        <qualifiedname>NativeDisplayManager::Display::SetCursorPosition</qualifiedname>
+        <param>
+          <type>const unsigned long</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const unsigned long</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+<para>This method set the cursor position on the display. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method need to be implemented for each OS. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>x</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The x position of the cursor on the screen. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>y</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The y position of the cursor on the screen. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="194" column="6"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_aeadb585297797bf7dce9b239bf306604_1aeadb585297797bf7dce9b239bf306604" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void NativeDisplayManager::Display::SetCursorPositionToCenter</definition>
+        <argsstring>()</argsstring>
+        <name>SetCursorPositionToCenter</name>
+        <qualifiedname>NativeDisplayManager::Display::SetCursorPositionToCenter</qualifiedname>
+        <briefdescription>
+<para>This method set the cursor position on the center of the display. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method need to be implemented for each OS. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="200" column="6"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_af4db0812a7c408f951c49783463491eb_1af4db0812a7c408f951c49783463491eb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void NativeDisplayManager::Display::SetCursorVisible</definition>
+        <argsstring>(const bool visible)</argsstring>
+        <name>SetCursorVisible</name>
+        <qualifiedname>NativeDisplayManager::Display::SetCursorVisible</qualifiedname>
+        <param>
+          <type>const bool</type>
+          <declname>visible</declname>
+        </param>
+        <briefdescription>
+<para>This method set the visibility of the cursor on the display. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method need to be implemented for each OS. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>visible</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The visibility of the cursor. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="207" column="6"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_aa4470000e565cf3340108e85e715cffa_1aa4470000e565cf3340108e85e715cffa" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void NativeDisplayManager::Display::SetVisible</definition>
+        <argsstring>(const bool visible)</argsstring>
+        <name>SetVisible</name>
+        <qualifiedname>NativeDisplayManager::Display::SetVisible</qualifiedname>
+        <param>
+          <type>const bool</type>
+          <declname>visible</declname>
+        </param>
+        <briefdescription>
+<para>This method set the visibility of the display. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method need to be implemented for each OS. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>visible</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The visibility of the display. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="214" column="6"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_adaf64238a91cb2d0dca46c51df2cf298_1adaf64238a91cb2d0dca46c51df2cf298" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void NativeDisplayManager::Display::Close</definition>
+        <argsstring>() const</argsstring>
+        <name>Close</name>
+        <qualifiedname>NativeDisplayManager::Display::Close</qualifiedname>
+        <briefdescription>
+<para>This method destroy the display on the screen. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method need to be implemented for each OS. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="220" column="6"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_a60c059722792d1bd7d16a3e4a5d2cc93_1a60c059722792d1bd7d16a3e4a5d2cc93" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void NativeDisplayManager::Display::SetX</definition>
+        <argsstring>(const int x)</argsstring>
+        <name>SetX</name>
+        <qualifiedname>NativeDisplayManager::Display::SetX</qualifiedname>
+        <param>
+          <type>const int</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+<para>This method set the display x position on the screen. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method need to be implemented for each OS. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>x</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The x position </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="227" column="6"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_a8fb12f5458845b50d3cbe45b3a31201f_1a8fb12f5458845b50d3cbe45b3a31201f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void NativeDisplayManager::Display::SetY</definition>
+        <argsstring>(const int y)</argsstring>
+        <name>SetY</name>
+        <qualifiedname>NativeDisplayManager::Display::SetY</qualifiedname>
+        <param>
+          <type>const int</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+<para>This method set the display y position on the screen. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method need to be implemented for each OS. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>y</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The y display </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="234" column="6"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_ad7af4c4009ef8d5b78f508898889877e_1ad7af4c4009ef8d5b78f508898889877e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void NativeDisplayManager::Display::SetWidth</definition>
+        <argsstring>(const int width)</argsstring>
+        <name>SetWidth</name>
+        <qualifiedname>NativeDisplayManager::Display::SetWidth</qualifiedname>
+        <param>
+          <type>const int</type>
+          <declname>width</declname>
+        </param>
+        <briefdescription>
+<para>This method set the display width. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method need to be implemented for each OS. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>width</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The width of the display </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="241" column="6"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_adaa971578cda69306f585a92476ba955_1adaa971578cda69306f585a92476ba955" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void NativeDisplayManager::Display::SetHeight</definition>
+        <argsstring>(const int height)</argsstring>
+        <name>SetHeight</name>
+        <qualifiedname>NativeDisplayManager::Display::SetHeight</qualifiedname>
+        <param>
+          <type>const int</type>
+          <declname>height</declname>
+        </param>
+        <briefdescription>
+<para>This method set the display height. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method need to be implemented for each OS. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>height</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The height of the display </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="248" column="6"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_abe318112a787dde66f3bfe4a05416435_1abe318112a787dde66f3bfe4a05416435" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool NativeDisplayManager::Display::HasFocus</definition>
+        <argsstring>() const</argsstring>
+        <name>HasFocus</name>
+        <qualifiedname>NativeDisplayManager::Display::HasFocus</qualifiedname>
+        <briefdescription>
+<para>This method check if the display has the focus (if the display is on the top). </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method need to be implemented for each OS. <simplesect kind="return"><para>If the window has the focus. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="255" column="6"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_abadb1acf0efbdafdf942cf247d67fa55_1abadb1acf0efbdafdf942cf247d67fa55" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int NativeDisplayManager::Display::GetX</definition>
+        <argsstring>() const</argsstring>
+        <name>GetX</name>
+        <qualifiedname>NativeDisplayManager::Display::GetX</qualifiedname>
+        <briefdescription>
+<para>This method get the x position of the display on the screen. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method need to be implemented for each OS. <simplesect kind="return"><para>The x position of the display on the screen. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="262" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_adecb43bc1a19cf59d08096c68ef63b1d_1adecb43bc1a19cf59d08096c68ef63b1d" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int NativeDisplayManager::Display::GetY</definition>
+        <argsstring>() const</argsstring>
+        <name>GetY</name>
+        <qualifiedname>NativeDisplayManager::Display::GetY</qualifiedname>
+        <briefdescription>
+<para>This method get the y position of the display on the screen. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method need to be implemented for each OS. <simplesect kind="return"><para>The y position of the display on the screen. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="269" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_affc8751be206a4d481d57e3e8a570e89_1affc8751be206a4d481d57e3e8a570e89" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int NativeDisplayManager::Display::GetWidth</definition>
+        <argsstring>() const</argsstring>
+        <name>GetWidth</name>
+        <qualifiedname>NativeDisplayManager::Display::GetWidth</qualifiedname>
+        <briefdescription>
+<para>This method get the width of the display. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method need to be implemented for each OS. <simplesect kind="return"><para>The width position of the display. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="276" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_a60c77c5d34b5cc57970fce11abbe8fbe_1a60c77c5d34b5cc57970fce11abbe8fbe" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int NativeDisplayManager::Display::GetHeight</definition>
+        <argsstring>() const</argsstring>
+        <name>GetHeight</name>
+        <qualifiedname>NativeDisplayManager::Display::GetHeight</qualifiedname>
+        <briefdescription>
+<para>This method get the height of the display. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method need to be implemented for each OS. <simplesect kind="return"><para>The height position of the display. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="283" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_af58b9fdfb1d0ffa3d9336dd79c15272b_1af58b9fdfb1d0ffa3d9336dd79c15272b" prot="public" static="no" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool NativeDisplayManager::Display::IsKeyPressed</definition>
+        <argsstring>(int virtual_key) const noexcept</argsstring>
+        <name>IsKeyPressed</name>
+        <qualifiedname>NativeDisplayManager::Display::IsKeyPressed</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>virtual_key</declname>
+        </param>
+        <briefdescription>
+<para>This method check if a virtual key is pressed. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>virtual_key</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The virtual key to check. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="289" column="6" bodyfile="includes/ndm/display.hpp" bodystart="289" bodyend="298"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_a53e98852715f558dee5c800c11d71625_1a53e98852715f558dee5c800c11d71625" prot="public" static="no" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool NativeDisplayManager::Display::IsKeyReleased</definition>
+        <argsstring>(int virtual_key) const noexcept</argsstring>
+        <name>IsKeyReleased</name>
+        <qualifiedname>NativeDisplayManager::Display::IsKeyReleased</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>virtual_key</declname>
+        </param>
+        <briefdescription>
+<para>This method check if a virtual key is released. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>virtual_key</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The virtual key to check. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="304" column="6" bodyfile="includes/ndm/display.hpp" bodystart="304" bodyend="313"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_a5cc94280f5844260a45e75b638d26431_1a5cc94280f5844260a45e75b638d26431" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void NativeDisplayManager::Display::AddKeyPressed</definition>
+        <argsstring>(int virtual_key)</argsstring>
+        <name>AddKeyPressed</name>
+        <qualifiedname>NativeDisplayManager::Display::AddKeyPressed</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>virtual_key</declname>
+        </param>
+        <briefdescription>
+<para>This method add a key pressed in the events struct, it also removed the same key from the keys released. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>virtual_key</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The virtual key to add. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="319" column="6" bodyfile="includes/ndm/display.hpp" bodystart="319" bodyend="351"/>
+      </memberdef>
+      <memberdef kind="function" id="class_native_display_manager_1_1_display_ae7b968b5acf3be8f976c90e5564c6a6c_1ae7b968b5acf3be8f976c90e5564c6a6c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void NativeDisplayManager::Display::AddKeyReleased</definition>
+        <argsstring>(int virtual_key)</argsstring>
+        <name>AddKeyReleased</name>
+        <qualifiedname>NativeDisplayManager::Display::AddKeyReleased</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>virtual_key</declname>
+        </param>
+        <briefdescription>
+<para>This method add a key released in the events struct, it also removed the same key from the keys pressed. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>virtual_key</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The virtual key to add. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ndm/display.hpp" line="357" column="6" bodyfile="includes/ndm/display.hpp" bodystart="357" bodyend="388"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>There is no default implementation of this class, some methods need to be defined in an other class for each systems, also, some methods are shared by all the OS and are already defined in this header. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>Each implementation can set attributes or methods in this class but can be only compiled with these, also this library is designed to report error mainly with exceptions. Here the list of all implementation :<itemizedlist>
+<listitem><para>win32_display_impl.cpp -&gt; implements the Win32 (x32 or x64) version. </para>
+</listitem></itemizedlist>
+</para>
+    </detaileddescription>
+    <location file="includes/ndm/display.hpp" line="56" column="1" bodyfile="includes/ndm/display.hpp" bodystart="57" bodyend="401"/>
+    <listofallmembers>
+      <member refid="class_native_display_manager_1_1_display_a5cc94280f5844260a45e75b638d26431_1a5cc94280f5844260a45e75b638d26431" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>AddKeyPressed</name></member>
+      <member refid="class_native_display_manager_1_1_display_ae7b968b5acf3be8f976c90e5564c6a6c_1ae7b968b5acf3be8f976c90e5564c6a6c" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>AddKeyReleased</name></member>
+      <member refid="class_native_display_manager_1_1_display_aff2fd3b39135ce1211d25925af7f6fd1_1aff2fd3b39135ce1211d25925af7f6fd1" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>CatchEvents</name></member>
+      <member refid="class_native_display_manager_1_1_display_adaf64238a91cb2d0dca46c51df2cf298_1adaf64238a91cb2d0dca46c51df2cf298" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>Close</name></member>
+      <member refid="class_native_display_manager_1_1_display_a5af22307e0d39325ac1de0ea7ae39ce9_1a5af22307e0d39325ac1de0ea7ae39ce9" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>DeleteOpenGLContext</name></member>
+      <member refid="class_native_display_manager_1_1_display_a4cd7d842644296a04e13e128b7c7f349_1a4cd7d842644296a04e13e128b7c7f349" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>Display</name></member>
+      <member refid="class_native_display_manager_1_1_display_1a4319cd1e3c3ef469119ed7da57f5b60b" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>Display</name></member>
+      <member refid="class_native_display_manager_1_1_display_1a4cc9c3270443f3577cf8969eea4e5ccf" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>Display</name></member>
+      <member refid="class_native_display_manager_1_1_display_afa0f4be91466ef2cef8e12906664faa5_1afa0f4be91466ef2cef8e12906664faa5" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>GetEvents</name></member>
+      <member refid="class_native_display_manager_1_1_display_a60c77c5d34b5cc57970fce11abbe8fbe_1a60c77c5d34b5cc57970fce11abbe8fbe" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>GetHeight</name></member>
+      <member refid="class_native_display_manager_1_1_display_affc8751be206a4d481d57e3e8a570e89_1affc8751be206a4d481d57e3e8a570e89" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>GetWidth</name></member>
+      <member refid="class_native_display_manager_1_1_display_abadb1acf0efbdafdf942cf247d67fa55_1abadb1acf0efbdafdf942cf247d67fa55" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>GetX</name></member>
+      <member refid="class_native_display_manager_1_1_display_adecb43bc1a19cf59d08096c68ef63b1d_1adecb43bc1a19cf59d08096c68ef63b1d" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>GetY</name></member>
+      <member refid="class_native_display_manager_1_1_display_abe318112a787dde66f3bfe4a05416435_1abe318112a787dde66f3bfe4a05416435" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>HasFocus</name></member>
+      <member refid="class_native_display_manager_1_1_display_af58b9fdfb1d0ffa3d9336dd79c15272b_1af58b9fdfb1d0ffa3d9336dd79c15272b" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>IsKeyPressed</name></member>
+      <member refid="class_native_display_manager_1_1_display_a53e98852715f558dee5c800c11d71625_1a53e98852715f558dee5c800c11d71625" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>IsKeyReleased</name></member>
+      <member refid="class_native_display_manager_1_1_display_a8fee8d5c3bd59173542da741a100ec9f_1a8fee8d5c3bd59173542da741a100ec9f" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>Load</name></member>
+      <member refid="class_native_display_manager_1_1_display_1a9e3df1e2854b137d94a4d8351e5f731b" prot="private" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>m_events</name></member>
+      <member refid="class_native_display_manager_1_1_display_1adedd245d7ed902e5c2e512664c6116ea" prot="private" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>m_loaded</name></member>
+      <member refid="class_native_display_manager_1_1_display_aeeb46ab1545f1ed854eeebc83ce13388_1aeeb46ab1545f1ed854eeebc83ce13388" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>MakeOldOpenGLContext</name></member>
+      <member refid="class_native_display_manager_1_1_display_a0946a103227630284d23e14c297c3058_1a0946a103227630284d23e14c297c3058" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>MakeOpenGLContext</name></member>
+      <member refid="class_native_display_manager_1_1_display_a181be870f1f01e73e13f6692e2cdb55a_1a181be870f1f01e73e13f6692e2cdb55a" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>SetCursorPosition</name></member>
+      <member refid="class_native_display_manager_1_1_display_aeadb585297797bf7dce9b239bf306604_1aeadb585297797bf7dce9b239bf306604" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>SetCursorPositionToCenter</name></member>
+      <member refid="class_native_display_manager_1_1_display_af4db0812a7c408f951c49783463491eb_1af4db0812a7c408f951c49783463491eb" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>SetCursorVisible</name></member>
+      <member refid="class_native_display_manager_1_1_display_aac260aaf17e6840c8115ca5a8feb18c7_1aac260aaf17e6840c8115ca5a8feb18c7" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>SetFullScreen</name></member>
+      <member refid="class_native_display_manager_1_1_display_adaa971578cda69306f585a92476ba955_1adaa971578cda69306f585a92476ba955" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>SetHeight</name></member>
+      <member refid="class_native_display_manager_1_1_display_a82c5ba98fe6191b918a51b80b0457229_1a82c5ba98fe6191b918a51b80b0457229" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>SetTitle</name></member>
+      <member refid="class_native_display_manager_1_1_display_aa4470000e565cf3340108e85e715cffa_1aa4470000e565cf3340108e85e715cffa" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>SetVisible</name></member>
+      <member refid="class_native_display_manager_1_1_display_ad7af4c4009ef8d5b78f508898889877e_1ad7af4c4009ef8d5b78f508898889877e" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>SetWidth</name></member>
+      <member refid="class_native_display_manager_1_1_display_a60c059722792d1bd7d16a3e4a5d2cc93_1a60c059722792d1bd7d16a3e4a5d2cc93" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>SetX</name></member>
+      <member refid="class_native_display_manager_1_1_display_a8fb12f5458845b50d3cbe45b3a31201f_1a8fb12f5458845b50d3cbe45b3a31201f" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>SetY</name></member>
+      <member refid="class_native_display_manager_1_1_display_aa9f1afd15d8e889c6a3aab7701acc695_1aa9f1afd15d8e889c6a3aab7701acc695" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>SwapFrontAndBack</name></member>
+      <member refid="class_native_display_manager_1_1_display_a4c52a2b884c0b06afcb720a50735cf96_1a4c52a2b884c0b06afcb720a50735cf96" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>Unload</name></member>
+      <member refid="class_native_display_manager_1_1_display_a70df3bb748a7057c496aa10152f39b23_1a70df3bb748a7057c496aa10152f39b23" prot="public" virt="non-virtual"><scope>NativeDisplayManager::Display</scope><name>~Display</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

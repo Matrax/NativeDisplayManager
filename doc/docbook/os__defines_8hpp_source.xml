@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_os__defines_8hpp_source" xml:lang="en-US">
+<title>os_defines.hpp</title>
+<indexterm><primary>includes/ndm/os_defines.hpp</primary></indexterm>
+<programlisting linenumbering="unnumbered"><anchor xml:id="_os__defines_8hpp_source_1l00001"/>00001 <emphasis role="preprocessor">#pragma&#32;once</emphasis>
+<anchor xml:id="_os__defines_8hpp_source_1l00002"/>00002 
+<anchor xml:id="_os__defines_8hpp_source_1l00003"/>00003 <emphasis role="comment">//&#32;Windows&#32;only&#32;includes</emphasis>
+<anchor xml:id="_os__defines_8hpp_source_1l00004"/>00004 <emphasis role="preprocessor">#if&#32;defined(_WIN32)&#32;||&#32;defined(_WIN64)</emphasis>
+<anchor xml:id="_os__defines_8hpp_source_1l00005"/>00005 <emphasis role="preprocessor">&#32;&#32;&#32;&#32;#ifndef&#32;WIN32_LEAN_AND_MEAN</emphasis>
+<anchor xml:id="_os__defines_8hpp_source_1l00006"/>00006 <emphasis role="preprocessor">&#32;&#32;&#32;&#32;#define&#32;WIN32_LEAN_AND_MEAN</emphasis>
+<anchor xml:id="_os__defines_8hpp_source_1l00007"/>00007 <emphasis role="preprocessor">&#32;&#32;&#32;&#32;#endif</emphasis>
+<anchor xml:id="_os__defines_8hpp_source_1l00008"/>00008 <emphasis role="preprocessor">&#32;&#32;&#32;&#32;#ifndef&#32;UNICODE</emphasis>
+<anchor xml:id="_os__defines_8hpp_source_1l00009"/>00009 <emphasis role="preprocessor">&#32;&#32;&#32;&#32;#define&#32;UNICODE</emphasis>
+<anchor xml:id="_os__defines_8hpp_source_1l00010"/>00010 <emphasis role="preprocessor">&#32;&#32;&#32;&#32;#endif</emphasis>
+<anchor xml:id="_os__defines_8hpp_source_1l00011"/>00011 <emphasis role="preprocessor">#include&#32;&lt;Windows.h&gt;</emphasis>
+<anchor xml:id="_os__defines_8hpp_source_1l00012"/>00012 <emphasis role="preprocessor">#endif</emphasis>
+<anchor xml:id="_os__defines_8hpp_source_1l00013"/>00013 
+<anchor xml:id="_os__defines_8hpp_source_1l00014"/>00014 <emphasis role="comment">//&#32;Windows&#32;only&#32;typedefs</emphasis>
+<anchor xml:id="_os__defines_8hpp_source_1l00015"/>00015 <emphasis role="preprocessor">#if&#32;defined(_WIN32)&#32;||&#32;defined(_WIN64)</emphasis>
+<anchor xml:id="_os__defines_8hpp_source_1l00016"/>00016 &#32;&#32;&#32;&#32;<emphasis role="keyword">typedef</emphasis>&#32;HGLRC(WINAPI*&#32;PFNWGLCREATECONTEXTATTRIBSARBPROC)&#32;(HDC&#32;hDC,&#32;HGLRC&#32;hShareContext,&#32;<emphasis role="keyword">const</emphasis>&#32;<emphasis role="keywordtype">int</emphasis>*&#32;attribList);
+<anchor xml:id="_os__defines_8hpp_source_1l00017"/>00017 &#32;&#32;&#32;&#32;<emphasis role="keyword">typedef</emphasis>&#32;BOOL(WINAPI*&#32;PFNWGLCHOOSEPIXELFORMATARBPROC)&#32;(HDC&#32;hdc,&#32;<emphasis role="keyword">const</emphasis>&#32;<emphasis role="keywordtype">int</emphasis>*&#32;piAttribIList,&#32;<emphasis role="keyword">const</emphasis>&#32;FLOAT*&#32;pfAttribFList,&#32;UINT&#32;nMaxFormats,&#32;<emphasis role="keywordtype">int</emphasis>*&#32;piFormats,&#32;UINT*&#32;nNumFormats);
+<anchor xml:id="_os__defines_8hpp_source_1l00018"/>00018 &#32;&#32;&#32;&#32;<emphasis role="keyword">typedef</emphasis>&#32;BOOL(WINAPI*&#32;PFNWGLSWAPINTERVALEXTPROC)&#32;(<emphasis role="keywordtype">int</emphasis>&#32;interval);
+<anchor xml:id="_os__defines_8hpp_source_1l00019"/>00019 <emphasis role="preprocessor">#endif</emphasis>
+<anchor xml:id="_os__defines_8hpp_source_1l00020"/>00020 
+<anchor xml:id="_os__defines_8hpp_source_1l00021"/>00021 <emphasis role="comment">//&#32;Windows&#32;only&#32;global&#32;variables&#32;</emphasis>
+<anchor xml:id="_os__defines_8hpp_source_1l00022"/>00022 <emphasis role="preprocessor">#if&#32;defined(_WIN32)&#32;||&#32;defined(_WIN64)</emphasis>
+<anchor xml:id="_os__defines_8hpp_source_1l00023"/>00023 &#32;&#32;&#32;&#32;<emphasis role="keyword">inline</emphasis>&#32;<emphasis role="keyword">static</emphasis>&#32;PFNWGLCHOOSEPIXELFORMATARBPROC&#32;wglChoosePixelFormatARB&#32;=&#32;<emphasis role="keyword">nullptr</emphasis>;
+<anchor xml:id="_os__defines_8hpp_source_1l00024"/>00024 &#32;&#32;&#32;&#32;<emphasis role="keyword">inline</emphasis>&#32;<emphasis role="keyword">static</emphasis>&#32;PFNWGLCREATECONTEXTATTRIBSARBPROC&#32;wglCreateContextAttribsARB&#32;=&#32;<emphasis role="keyword">nullptr</emphasis>;
+<anchor xml:id="_os__defines_8hpp_source_1l00025"/>00025 &#32;&#32;&#32;&#32;<emphasis role="keyword">inline</emphasis>&#32;<emphasis role="keyword">static</emphasis>&#32;PFNWGLSWAPINTERVALEXTPROC&#32;wglSwapIntervalEXT&#32;=&#32;<emphasis role="keyword">nullptr</emphasis>;
+<anchor xml:id="_os__defines_8hpp_source_1l00026"/>00026 <emphasis role="preprocessor">#endif</emphasis>
+<anchor xml:id="_os__defines_8hpp_source_1l00027"/>00027 
+<anchor xml:id="_os__defines_8hpp_source_1l00028"/>00028 <emphasis role="comment">//&#32;Windows&#32;only&#32;functions</emphasis>
+<anchor xml:id="_os__defines_8hpp_source_1l00029"/>00029 <emphasis role="preprocessor">#if&#32;defined(_WIN32)&#32;||&#32;defined(_WIN64)</emphasis>
+<anchor xml:id="_os__defines_8hpp_source_1l00030"/>00030 &#32;&#32;&#32;&#32;<emphasis role="keyword">inline</emphasis>&#32;BOOL&#32;CALLBACK&#32;Win32MonitorProcess(HMONITOR&#32;hMon,&#32;HDC&#32;hdc,&#32;LPRECT&#32;lprcMonitor,&#32;LPARAM&#32;pData);
+<anchor xml:id="_os__defines_8hpp_source_1l00031"/>00031 &#32;&#32;&#32;&#32;<emphasis role="keyword">inline</emphasis>&#32;LRESULT&#32;CALLBACK&#32;Win32ProcessEvent(HWND&#32;handle,&#32;UINT&#32;message,&#32;WPARAM&#32;wParam,&#32;LPARAM&#32;lParam);
+<anchor xml:id="_os__defines_8hpp_source_1l00032"/>00032 <emphasis role="preprocessor">#endif</emphasis>
+</programlisting></section>
