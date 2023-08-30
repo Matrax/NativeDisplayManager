@@ -19,6 +19,12 @@ BOOL CALLBACK Win32MonitorProcess(HMONITOR hMon, HDC hdc, LPRECT lprcMonitor, LP
     info.name = std::string((char *) monitor_info.szDevice);
     info.width = lprcMonitor->right - lprcMonitor->left;
     info.height = lprcMonitor->bottom - lprcMonitor->top;
+    info.primary = false;
+
+    if(monitor_info.dwFlags == MONITORINFOF_PRIMARY)
+        info.primary = true;
+
+    // Put in the vector
     monitors->push_back(info);
 
     return TRUE;

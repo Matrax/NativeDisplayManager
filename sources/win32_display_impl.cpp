@@ -9,7 +9,10 @@ LRESULT CALLBACK Win32ProcessEvent(HWND handle, UINT message, WPARAM wParam, LPA
 	NativeDisplayManager::Display * current_display = (NativeDisplayManager::Display *) GetWindowLongPtr(handle, GWLP_USERDATA);
 	if(current_display == nullptr)
 		return DefWindowProc(handle, message, wParam, lParam);
+
 	NativeDisplayManager::DisplayEvents & events = current_display->GetEvents();
+	bool already_pressed = false;
+	int key = (int) wParam;
 	
 	switch (message)
 	{
@@ -40,10 +43,41 @@ LRESULT CALLBACK Win32ProcessEvent(HWND handle, UINT message, WPARAM wParam, LPA
 			events.language_changed = true;
 			break;
 		case WM_KEYDOWN:
-			current_display->AddKeyPressed((int) wParam);
+			// Check if the key is already in the array
+			for (size_t i = 0; i < MAX_KEYBOARD_INPUTS && already_pressed == false; i++)
+			{
+				if (events.keys_pressed[i] == key)
+					already_pressed = true;
+			}
+			// If not, we add the key in the array
+			if (already_pressed == false)
+			{
+				for (size_t i = 0; i < MAX_KEYBOARD_INPUTS && already_pressed == false; i++)
+				{
+					if (events.keys_pressed[i] == 0)
+					{
+						events.keys_pressed[i] = key;
+						break;
+					}
+				}
+			}
 			break;
 		case WM_KEYUP:
-			current_display->AddKeyReleased((int) wParam);
+				// We add the key pressed in the released array
+				for (size_t i = 0; i < MAX_KEYBOARD_INPUTS; i++)
+				{
+					if (events.keys_released[i] == 0)
+					{
+						events.keys_released[i] = key;
+						break;
+					}
+				}
+				// We remove the key in the pressed array
+				for (size_t i = 0; i < MAX_KEYBOARD_INPUTS; i++)
+				{
+					if (events.keys_pressed[i] == key)
+						events.keys_pressed[i] = 0;
+				}
 			break;
 		case WM_LBUTTONDOWN:
 			events.left_mouse_pressed = true;
@@ -169,8 +203,10 @@ namespace NativeDisplayManager
 	// Get the events of the window
 	DisplayEvents & Display::CatchEvents() noexcept
 	{
-		// Clear events and messages
-		SecureZeroMemory(&m_events, sizeof(DisplayEvents));
+		// Clear events
+		ClearEvents();
+
+		// Clear messages
 		SecureZeroMemory(&m_messages, sizeof(MSG));
 
 		// While there are windows messages, we dipatch them
@@ -198,6 +234,7 @@ namespace NativeDisplayManager
 
 	void Display::MakeOldOpenGLContext(const bool double_buffer, const int color_bits, const int depth_bits, const int stencil_bits)
 	{
+
 		if(m_loaded == false)
 			throw std::runtime_error("Can't create an OpenGL context if the display is not loaded !");
 
@@ -521,6 +558,7 @@ namespace NativeDisplayManager
 			ShowWindow(m_handle, SW_HIDE);
 		}
 	}
+
 };
 
 #endif

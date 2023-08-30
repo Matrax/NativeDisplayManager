@@ -25,6 +25,7 @@ int main()
 			std::cout << "\tname: " << monitors[i].name << std::endl;
 			std::cout << "\twidth: " << monitors[i].width << std::endl;
 			std::cout << "\theight: " << monitors[i].height << std::endl;
+			std::cout << "\tprimary: " << monitors[i].primary << std::endl;
 		}
 
 		// Load displays
@@ -50,45 +51,41 @@ int main()
 
 		// Check some events for window 1
 		if (events.resized == true) 
-			std::cout << "event: resized" << std::endl;
+			std::cout << "display: resized" << std::endl;
 		if (events.minimized == true) 
-			std::cout << "event: minimized" << std::endl;
+			std::cout << "display: minimized" << std::endl;
 		if (events.maximized == true) 
-			std::cout << "event: maximized" << std::endl;
+			std::cout << "display: maximized" << std::endl;
 		if (events.moved == true) 
-			std::cout << "event: moved" << std::endl;
+			std::cout << "display: moved" << std::endl;
 		if (events.language_changed == true) 
-			std::cout << "event: language changed" << std::endl;
+			std::cout << "display: language changed" << std::endl;
 
 		// Check some events for window 2
 		if (events_2.resized == true) 
-			std::cout << "event 2: resized" << std::endl;
+			std::cout << "display 2: resized" << std::endl;
 		if (events_2.minimized == true) 
-			std::cout << "event 2: minimized" << std::endl;
+			std::cout << "display 2: minimized" << std::endl;
 		if (events_2.maximized == true) 
-			std::cout << "event 2: maximized" << std::endl;
+			std::cout << "display 2: maximized" << std::endl;
 		if (events_2.moved == true) 
-			std::cout << "event 2: moved" << std::endl;
+			std::cout << "display 2: moved" << std::endl;
 		if (events_2.language_changed == true) 
-			std::cout << "event 2: language changed" << std::endl;
+			std::cout << "display 2: language changed" << std::endl;
 
 		// Update window
 		glClear(GL_COLOR_BUFFER_BIT);
 		display.SwapFrontAndBack(1);
 
-		// Check window closed
-		if (events.closed == true)
-		{
-			running = false;
-			std::cout << "event: closed" << std::endl;
-		}
+		// Key tests
 
-		// Check window 2 closed
-		if (events_2.closed == true)
+		// Check window closed
+		if (events.closed == true || events_2.closed == true)
 		{
 			running = false;
-			std::cout << "event 2: closed" << std::endl;
+			std::cout << "Closed" << std::endl;
 		}
+		
 	}
 
 	// Unload

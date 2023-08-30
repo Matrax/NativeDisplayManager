@@ -23,8 +23,6 @@ namespace NativeDisplayManager
 	*/
 	struct DisplayEvents
 	{
-		int m_keys_down[32];
-		int m_keys_up[32];
 		int previous_mouse_x;
 		int previous_mouse_y;
 		int mouse_x;
@@ -44,6 +42,8 @@ namespace NativeDisplayManager
 		bool left_mouse_released;
 		bool right_mouse_released;
 		bool middle_mouse_released;
+		int keys_pressed[10];
+		int keys_released[10];
 	};
 
 	/**
@@ -64,11 +64,11 @@ namespace NativeDisplayManager
 
 		// Windows only attributes
 		#if defined(_WIN32) || defined(_WIN64)
-		HWND m_handle = nullptr;
-		MSG m_messages = {};
-		HDC m_device_context = nullptr;
-		HGLRC m_gl_device_context = nullptr;
-		HINSTANCE m_instance = nullptr;
+			HWND m_handle = nullptr;
+			MSG m_messages = {};
+			HDC m_device_context = nullptr;
+			HGLRC m_gl_device_context = nullptr;
+			HINSTANCE m_instance = nullptr;
 		#endif
 
 	public:
@@ -100,7 +100,7 @@ namespace NativeDisplayManager
 		}
 
 		/**
-		* This method must return all the events catched.
+		* This method must return all the events catched by the window.
 		* This method need to be implemented for each OS.
 		* @return DisplayEvents& The events structure
 		*/
@@ -113,6 +113,34 @@ namespace NativeDisplayManager
 		DisplayEvents & GetEvents() noexcept 
 		{
 			return m_events;
+		}
+
+		void ClearEvents() noexcept
+		{
+			// Mouse events
+			m_events.moused_moved = false;
+			m_events.left_mouse_pressed = false;
+			m_events.left_mouse_released = false;
+			m_events.middle_mouse_pressed = false;
+			m_events.middle_mouse_released = false;
+			m_events.right_mouse_pressed = false;
+			m_events.right_mouse_released = false;
+
+			// Window events
+			m_events.closed = false;
+			m_events.maximized = false;
+			m_events.minimized = false;
+			m_events.moved = false;
+			m_events.resized = false;
+
+			// System events
+			m_events.language_changed = false;
+
+			// Keyboards events
+			for(size_t i = 0; i < MAX_KEYBOARD_INPUTS; i++)
+			{
+				m_events.keys_released[i] = 0;
+			}
 		}
 
 		/**
@@ -170,7 +198,8 @@ namespace NativeDisplayManager
 		* @param samples Number of samples.
 		*/
 		void MakeOpenGLContext(const int major_version, const int minor_version, const bool double_buffer, const int color_bits, 
-							   const int alpha_bits, const int depth_bits, const int stencil_bits, const bool samples_buffers, const int samples);
+							   const int alpha_bits, const int depth_bits, const int stencil_bits, const bool samples_buffers, 
+							   const int samples);
 		
 		/**
 		* This method delete the current OpenGL context.
@@ -282,120 +311,36 @@ namespace NativeDisplayManager
 		*/
 		int GetHeight() const;
 
-		/**
-		* This method check if a virtual key is pressed.
-		* @param virtual_key The virtual key to check.
-		*/
-		bool IsKeyPressed(int virtual_key) const noexcept
-		{
-			for (size_t i = 0; i < 32; i++)
-			{
-				if (m_events.m_keys_down[i] == virtual_key)
-					return true;
-			}
-
-			return false;
-		}
-
-		/**
-		* This method check if a virtual key is released.
-		* @param virtual_key The virtual key to check.
-		*/
-		bool IsKeyReleased(int virtual_key) const noexcept
-		{
-			for (size_t i = 0; i < 32; i++)
-			{
-				if (m_events.m_keys_up[i] == virtual_key)
-					return true;
-			}
-
-			return false;
-		}
-
-		/**
-		* This method add a key pressed in the events struct, it also removed the same key from the keys released.
-		* @param virtual_key The virtual key to add.
-		*/
-		void AddKeyPressed(int virtual_key)
-		{
-			bool already_pressed = false;
-
-			// Check if the key is already in the array
-			for (size_t i = 0; i < 32 && already_pressed == false; i++)
-			{
-				if (m_events.m_keys_down[i] == virtual_key)
-					already_pressed = true;
-			}
-
-			// If not, we add the key and remove from the keys up array
-			if (already_pressed == false)
-			{
-				for (size_t i = 0; i < 32; i++)
-				{
-					if (m_events.m_keys_down[i] == 0)
-					{
-						m_events.m_keys_down[i] = virtual_key;
-						break;
-					}
-				}
-
-				for (size_t i = 0; i < 32; i++)
-				{
-					if (m_events.m_keys_up[i] == virtual_key)
-					{
-						m_events.m_keys_up[i] = 0;
-						break;
-					}
-				}
-			}
-		}
-
-		/**
-		* This method add a key released in the events struct, it also removed the same key from the keys pressed.
-		* @param virtual_key The virtual key to add.
-		*/
-		void AddKeyReleased(int virtual_key)
-		{
-			bool already_released = false;
-
-			// Check if the key is already in the array
-			for (size_t i = 0; i < 32 && already_released == false; i++)
-			{
-				if (m_events.m_keys_up[i] == virtual_key)
-					already_released = true;
-			}
-			
-			// If not, we add the key and remove from the keys down array
-			if (already_released == false)
-			{
-				for (size_t i = 0; i < 32; i++)
-				{
-					if (m_events.m_keys_up[i] == 0)
-					{
-						m_events.m_keys_up[i] = virtual_key;
-						break;
-					}
-				}
-				for (size_t i = 0; i < 32; i++)
-				{
-					if (m_events.m_keys_down[i] == virtual_key)
-					{
-						m_events.m_keys_down[i] = 0;
-						break;
-					}
-				}
-			}
-		}
-
 		// Windows only methods
 		#if defined(_WIN32) || defined(_WIN64)
 
-		/**
-		* This method get the handle of the display.
-		* This method is only compiled on Windows.
-		* @return The y mouse position.
-		*/
-		inline HWND GetHandle() const noexcept { return m_handle; }
+			/**
+			* This method get the handle of the display.
+			* This method is only compiled on Windows.
+			* @return The handle of the display.
+			*/
+			inline HWND GetHandle() const noexcept { return m_handle; }
+
+			/**
+			* This method get the device context of the display.
+			* This method is only compiled on Windows.
+			* @return The device context of the display.
+			*/
+			inline HDC GetHDC() const noexcept { return m_device_context; }
+
+			/**
+			* This method get the OpenGL device context of the display.
+			* This method is only compiled on Windows.
+			* @return The OpenGL device context of the display.
+			*/
+			inline HGLRC GetHGLRC() const noexcept { return m_gl_device_context; }
+
+			/**
+			* This method get the instance of the program.
+			* This method is only compiled on Windows.
+			* @return The instance of the program.
+			*/
+			inline HINSTANCE GetHINSTANCE() const noexcept { return m_instance; }
 
 		#endif
 	};

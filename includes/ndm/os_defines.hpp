@@ -30,3 +30,8 @@
     inline BOOL CALLBACK Win32MonitorProcess(HMONITOR hMon, HDC hdc, LPRECT lprcMonitor, LPARAM pData);
     inline LRESULT CALLBACK Win32ProcessEvent(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
 #endif
+
+// Keyboard defines
+#ifndef MAX_KEYBOARD_INPUTS
+    #define MAX_KEYBOARD_INPUTS 10
+#endif

@@ -14,7 +14,8 @@ set(NDM_LIB_VERSION 1.0)
 set(NDM_INCLUDES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/includes")
 set(NDM_WIN32_SOURCES "sources/win32_display_impl.cpp" 
                       "sources/win32_monitor_impl.cpp")
-set(NDM_WIN32_LIBRARIES "opengl32.lib")
+set(NDM_WIN32_LIBRARIES "opengl32.lib" 
+                        "Gdi32.lib")
 set(NDM_WIN32_TESTS "tests/win32_opengl_test.cpp")
 
 
