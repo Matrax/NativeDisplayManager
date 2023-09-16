@@ -29,10 +29,21 @@ int main()
 		}
 
 		// Load displays
-		display_2.Load("Test", 900, 600, true);
-		display.Load("Test", 900, 600, true);
-		display.MakeOpenGLContext(4, 6, true, 32, 8, 24, 8, false, 0);
-		display.SetTitle((const char *) glGetString(GL_VERSION));
+		display.Load("Window with OpenGL", 900, 600, true);
+		display_2.Load("Classic Window", 900, 600, true);
+
+		// Make the current thread an OpenGL context
+		NativeDisplayManager::GLContextParams params;
+		params.major_version = 4;
+		params.minor_version = 6;
+		params.double_buffer = true;
+		params.color_bits = 32;
+		params.alpha_bits = 8;
+		params.depth_bits = 24; 
+		params.stencil_bits = 8;
+		params.samples_buffers = false;
+		params.samples = 0;
+		display.MakeCurrentThreadOpenGLContext(params);
 
 		// Set OpenGL clear color
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -46,8 +57,8 @@ int main()
 	while (running == true)
 	{
 		// Get Events
-		NativeDisplayManager::DisplayEvents & events = display.CatchEvents();
-		NativeDisplayManager::DisplayEvents & events_2 = display_2.CatchEvents();
+		const NativeDisplayManager::DisplayEvents & events = display.CatchEvents();
+		const NativeDisplayManager::DisplayEvents & events_2 = display_2.CatchEvents();
 
 		// Check some events for window 1
 		if (events.resized == true) 

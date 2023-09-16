@@ -16,34 +16,29 @@ namespace NativeDisplayManager
 	* This structure represent all the events happening during the execution by a display, getters for all 
 	* of them are defined in the display class directly, all implementations must use this structure to report 
 	* all the following events :
-	* - mouse and keyboard inputs 
-	* - mouse position and mouse direction
-	* - display resized, minimized, maximized, moved
-	* - display closed
+	* - display resized, minimized, maximized, moved, closed, language changed
 	*/
 	struct DisplayEvents
 	{
-		int previous_mouse_x;
-		int previous_mouse_y;
-		int mouse_x;
-		int mouse_y;
-		int mouse_direction_x;
-		int mouse_direction_y;
 		bool resized;
 		bool closed;
 		bool minimized;
 		bool maximized;
 		bool moved;
-		bool moused_moved;
 		bool language_changed;
-		bool left_mouse_pressed;
-		bool right_mouse_pressed;
-		bool middle_mouse_pressed;
-		bool left_mouse_released;
-		bool right_mouse_released;
-		bool middle_mouse_released;
-		int keys_pressed[10];
-		int keys_released[10];
+	};
+
+	struct GLContextParams
+	{
+		int major_version;
+		int minor_version;
+		int color_bits;  	    
+		int alpha_bits; 
+		int depth_bits; 
+		int stencil_bits; 
+		int samples;
+		bool double_buffer;
+		bool samples_buffers;
 	};
 
 	/**
@@ -117,15 +112,6 @@ namespace NativeDisplayManager
 
 		void ClearEvents() noexcept
 		{
-			// Mouse events
-			m_events.moused_moved = false;
-			m_events.left_mouse_pressed = false;
-			m_events.left_mouse_released = false;
-			m_events.middle_mouse_pressed = false;
-			m_events.middle_mouse_released = false;
-			m_events.right_mouse_pressed = false;
-			m_events.right_mouse_released = false;
-
 			// Window events
 			m_events.closed = false;
 			m_events.maximized = false;
@@ -135,12 +121,6 @@ namespace NativeDisplayManager
 
 			// System events
 			m_events.language_changed = false;
-
-			// Keyboards events
-			for(size_t i = 0; i < MAX_KEYBOARD_INPUTS; i++)
-			{
-				m_events.keys_released[i] = 0;
-			}
 		}
 
 		/**
@@ -173,33 +153,12 @@ namespace NativeDisplayManager
 		void SwapFrontAndBack(const int swap_interval) const noexcept;
 
 		/**
-		* This method create an OpenGL context in an old way.
+		* This method create an OpenGL context for the current thread.
 		* If the creation of the OpenGL context cannot be done, an exception is thrown.
 		* This method need to be implemented for each OS.
-		* @param double_buffer Use double buffering.
-		* @param color_bits Number of bits to represent a color on the color buffer.
-		* @param depth_bits Number of bits to represent a data on the depth buffer.
-		* @param depth_bits Number of bits to represent a data on the stencil buffer.
+		* @param params The structure that contains all the params for the creation of the OpenGL Context.
 		*/
-		void MakeOldOpenGLContext(const bool double_buffer, const int color_bits, const int depth_bits, const int stencil_bits);
-
-		/**
-		* This method create an OpenGL context.
-		* If the creation of the OpenGL context cannot be done, an exception is thrown.
-		* This method need to be implemented for each OS.
-		* @param major_version The OpenGL context major version to load.
-		* @param minor_version The OpenGL context minor version to load.
-		* @param double_buffer Use double buffering.
-		* @param color_bits Number of bits to represent a color on the color buffer.
-		* @param alpha_bits Number of bits to represent the alpha channel on the color buffer.
-		* @param depth_bits Number of bits to represent a data on the depth buffer.
-		* @param stencil_bits Number of bits to represent a data on the stencil buffer.
-		* @param samples_buffers Use samples in the buffers.
-		* @param samples Number of samples.
-		*/
-		void MakeOpenGLContext(const int major_version, const int minor_version, const bool double_buffer, const int color_bits, 
-							   const int alpha_bits, const int depth_bits, const int stencil_bits, const bool samples_buffers, 
-							   const int samples);
+		void MakeCurrentThreadOpenGLContext(const GLContextParams & params);
 		
 		/**
 		* This method delete the current OpenGL context.

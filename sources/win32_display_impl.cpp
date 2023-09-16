@@ -9,99 +9,23 @@ LRESULT CALLBACK Win32ProcessEvent(HWND handle, UINT message, WPARAM wParam, LPA
 	NativeDisplayManager::Display * current_display = (NativeDisplayManager::Display *) GetWindowLongPtr(handle, GWLP_USERDATA);
 	if(current_display == nullptr)
 		return DefWindowProc(handle, message, wParam, lParam);
-
 	NativeDisplayManager::DisplayEvents & events = current_display->GetEvents();
-	bool already_pressed = false;
-	int key = (int) wParam;
 	
 	switch (message)
 	{
 		case WM_CLOSE:
 			events.closed = true;
 			break;
-		case WM_MOUSEMOVE:
-			events.moused_moved = true;
-			events.previous_mouse_x = events.mouse_x;
-			events.previous_mouse_y = events.mouse_y;
-			events.mouse_x = static_cast<int>(LOWORD(lParam));
-			events.mouse_y = static_cast<int>(HIWORD(lParam));
-			events.mouse_direction_x = events.mouse_x - events.previous_mouse_x;
-			events.mouse_direction_y = events.mouse_y - events.previous_mouse_y;
-			break;
 		case WM_SIZE:
-			if (wParam == SIZE_RESTORED)
-				events.resized = true;
-			if (wParam == SIZE_MINIMIZED)
-				events.minimized = true;
-			if (wParam == SIZE_MAXIMIZED)
-				events.maximized = true;
+			if (wParam == SIZE_RESTORED) events.resized = true;
+			if (wParam == SIZE_MINIMIZED) events.minimized = true;
+			if (wParam == SIZE_MAXIMIZED) events.maximized = true;
 			break;
 		case WM_MOVE:
 			events.moved = true;
 			break;
 		case WM_INPUTLANGCHANGE:
 			events.language_changed = true;
-			break;
-		case WM_KEYDOWN:
-			// Check if the key is already in the array
-			for (size_t i = 0; i < MAX_KEYBOARD_INPUTS && already_pressed == false; i++)
-			{
-				if (events.keys_pressed[i] == key)
-					already_pressed = true;
-			}
-			// If not, we add the key in the array
-			if (already_pressed == false)
-			{
-				for (size_t i = 0; i < MAX_KEYBOARD_INPUTS && already_pressed == false; i++)
-				{
-					if (events.keys_pressed[i] == 0)
-					{
-						events.keys_pressed[i] = key;
-						break;
-					}
-				}
-			}
-			break;
-		case WM_KEYUP:
-				// We add the key pressed in the released array
-				for (size_t i = 0; i < MAX_KEYBOARD_INPUTS; i++)
-				{
-					if (events.keys_released[i] == 0)
-					{
-						events.keys_released[i] = key;
-						break;
-					}
-				}
-				// We remove the key in the pressed array
-				for (size_t i = 0; i < MAX_KEYBOARD_INPUTS; i++)
-				{
-					if (events.keys_pressed[i] == key)
-						events.keys_pressed[i] = 0;
-				}
-			break;
-		case WM_LBUTTONDOWN:
-			events.left_mouse_pressed = true;
-			events.left_mouse_released = false;
-			break;
-		case WM_LBUTTONUP:
-			events.left_mouse_pressed = false;
-			events.left_mouse_released = true;
-			break;
-		case WM_RBUTTONDOWN:
-			events.right_mouse_pressed = true;
-			events.right_mouse_released = false;
-			break;
-		case WM_RBUTTONUP:
-			events.right_mouse_pressed = false;
-			events.right_mouse_released = true;
-			break;
-		case WM_MBUTTONDOWN:
-			events.middle_mouse_pressed = true;
-			events.middle_mouse_released = false;
-			break;
-		case WM_MBUTTONUP:
-			events.middle_mouse_pressed = false;
-			events.middle_mouse_released = true;
 			break;
 	}
 
@@ -232,42 +156,7 @@ namespace NativeDisplayManager
 		}
 	}
 
-	void Display::MakeOldOpenGLContext(const bool double_buffer, const int color_bits, const int depth_bits, const int stencil_bits)
-	{
-
-		if(m_loaded == false)
-			throw std::runtime_error("Can't create an OpenGL context if the display is not loaded !");
-
-		// Set pixel format
-		PIXELFORMATDESCRIPTOR pixel_format_descriptor = {};
-		SecureZeroMemory(&pixel_format_descriptor, sizeof(PIXELFORMATDESCRIPTOR));
-		pixel_format_descriptor.nVersion = 1;
-		pixel_format_descriptor.nSize = sizeof(PIXELFORMATDESCRIPTOR);
-		pixel_format_descriptor.dwFlags = PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW;
-		pixel_format_descriptor.iPixelType = PFD_TYPE_RGBA;
-		pixel_format_descriptor.cColorBits = color_bits;
-		pixel_format_descriptor.cDepthBits = depth_bits;
-		pixel_format_descriptor.cStencilBits = stencil_bits;
-
-		if (double_buffer == true)
-			pixel_format_descriptor.dwFlags = pixel_format_descriptor.dwFlags | PFD_DOUBLEBUFFER;
-
-		int  pixel_format = ChoosePixelFormat(m_device_context, &pixel_format_descriptor);
-		if (SetPixelFormat(m_device_context, pixel_format, &pixel_format_descriptor) == FALSE)
-			throw std::runtime_error("Can't set the pixel format !");
-
-		// Create the old GL Context
-		m_gl_device_context = wglCreateContext(m_device_context);
-		if (m_gl_device_context == nullptr)
-			throw std::runtime_error("Can't create the old OpenGL context !");
-
-		// Set the OpenGL context active
-		if (wglMakeCurrent(m_device_context, m_gl_device_context) == FALSE)
-			throw std::runtime_error("Can't make the old OpenGL context !");
-	}
-
-	void Display::MakeOpenGLContext(const int major_version, const int minor_version, const bool double_buffer, const int color_bits, 
-							  	    const int alpha_bits, const int depth_bits, const int stencil_bits, const bool samples_buffers, const int samples)
+	void Display::MakeCurrentThreadOpenGLContext(const GLContextParams & params)
 	{
 		if(m_loaded == false)
 			throw std::runtime_error("Can't create an OpenGL context if the display is not loaded !");
@@ -285,7 +174,7 @@ namespace NativeDisplayManager
 		fake_window_class.hInstance = m_instance;
 		fake_window_class.cbSize = sizeof(WNDCLASSEX);
 		fake_window_class.hbrBackground = (HBRUSH)(1 + COLOR_WINDOW);
-		fake_window_class.style = CS_OWNDC;
+		fake_window_class.style = CS_OWNDC | CS_VREDRAW | CS_HREDRAW;
 
 		if (RegisterClassEx(&fake_window_class) == 0)
 			throw std::runtime_error("Error on register the fake windows class !");
@@ -365,22 +254,22 @@ namespace NativeDisplayManager
 		{
 			0x2001, true, //WGL_DRAW_TO_WINDOW_ARB 0x2001
 			0x2010, true, // WGL_SUPPORT_OPENGL_ARB 0x2010
-			0x2011, double_buffer, // WGL_DOUBLE_BUFFER_ARB 0x2011
+			0x2011, params.double_buffer, // WGL_DOUBLE_BUFFER_ARB 0x2011
 			0x2003, 0x2027, // WGL_ACCELERATION_ARB 0x2003 WGL_FULL_ACCELERATION_ARB 0x2027
 			0x2013, 0x202B, // WGL_PIXEL_TYPE_ARB 0x2013 WGL_TYPE_RGBA_ARB 0x202B
-			0x2014, color_bits, // WGL_COLOR_BITS_ARB 0x2014
-			0x2022, depth_bits, // WGL_DEPTH_BITS_ARB 0x2022
-			0x201B, alpha_bits, // WGL_ALPHA_BITS_ARB 0x201B
-			0x2023, stencil_bits, // WGL_STENCIL_BITS_ARB 0x2023
-			0x2041, samples_buffers, // WGL_SAMPLE_BUFFERS_ARB 0x2041
-			0x2042, samples, // WGL_SAMPLES_ARB 0x2042
+			0x2014, params.color_bits, // WGL_COLOR_BITS_ARB 0x2014
+			0x2022, params.depth_bits, // WGL_DEPTH_BITS_ARB 0x2022
+			0x201B, params.alpha_bits, // WGL_ALPHA_BITS_ARB 0x201B
+			0x2023, params.stencil_bits, // WGL_STENCIL_BITS_ARB 0x2023
+			0x2041, params.samples_buffers, // WGL_SAMPLE_BUFFERS_ARB 0x2041
+			0x2042, params.samples, // WGL_SAMPLES_ARB 0x2042
 			0
 		};
 
 		const int context_attributes[] =
 		{
-			0x2091, major_version, // WGL_CONTEXT_MAJOR_VERSION_ARB 0x2091
-			0x2092, minor_version, // WGL_CONTEXT_MINOR_VERSION_ARB 0x2092
+			0x2091, params.major_version, // WGL_CONTEXT_MAJOR_VERSION_ARB 0x2091
+			0x2092, params.minor_version, // WGL_CONTEXT_MINOR_VERSION_ARB 0x2092
 			0x9126, 0x00000001, // WGL_CONTEXT_PROFILE_MASK_ARB 0x9126 WGL_CONTEXT_CORE_PROFILE_BIT_ARB 0x00000001
 			0
 		};
