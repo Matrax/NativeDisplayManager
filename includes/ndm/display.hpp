@@ -28,6 +28,9 @@ namespace NativeDisplayManager
 		bool language_changed;
 	};
 
+	/**
+	* This structure describe the paramaters to create of an OpenGL context for the current thread.
+	*/
 	struct GLContextParams
 	{
 		int major_version;
@@ -50,21 +53,12 @@ namespace NativeDisplayManager
 	*/
 	class Display
 	{
-
 	private:
 
-		// Shared attributes
-		DisplayEvents m_events = {};
+		// Attributes
+		DisplayEvents m_events;
+		NativeAttributes m_native_attributes;
 		bool m_loaded = false;
-
-		// Windows only attributes
-		#if defined(_WIN32) || defined(_WIN64)
-			HWND m_handle = nullptr;
-			MSG m_messages = {};
-			HDC m_device_context = nullptr;
-			HGLRC m_gl_device_context = nullptr;
-			HINSTANCE m_instance = nullptr;
-		#endif
 
 	public:
 
@@ -72,7 +66,9 @@ namespace NativeDisplayManager
 		* Constructor of this class.
 		* This class is a singleton so if a display already exist, an exception is thrown. If not, the global instance is set.
 		*/
-		Display() : m_loaded(false) {}
+		Display() : 
+			m_loaded(false) 
+		{}
 
 		/**
 		* No copy constructor 
@@ -102,14 +98,8 @@ namespace NativeDisplayManager
 		DisplayEvents & CatchEvents() noexcept;
 
 		/**
-		* This method return the internal events struct.
-		* @return DisplayEvents& The events structure
+		* This method reset all the registered events of the display.
 		*/
-		DisplayEvents & GetEvents() noexcept 
-		{
-			return m_events;
-		}
-
 		void ClearEvents() noexcept
 		{
 			// Window events
@@ -151,6 +141,13 @@ namespace NativeDisplayManager
 		* @param fullscreen The time interval between two swap (0 = no vsync, 1 = vsync).
 		*/
 		void SwapFrontAndBack(const int swap_interval) const noexcept;
+
+		/**
+		* This method set the display resizable by the user (minimize, maximize...).
+		* This method need to be implemented for each OS.
+		* @param resizable If the display is resizable.
+		*/
+		void SetResizableByUser(const bool resizable) noexcept;
 
 		/**
 		* This method create an OpenGL context for the current thread.
@@ -270,37 +267,22 @@ namespace NativeDisplayManager
 		*/
 		int GetHeight() const;
 
-		// Windows only methods
-		#if defined(_WIN32) || defined(_WIN64)
+		/**
+		* This method get the OS-specific attributes of the display.
+		* @return The OS-specific attributes of the display.
+		*/
+		NativeAttributes & GetNativeAttributes()
+		{
+			return m_native_attributes;
+		}
 
-			/**
-			* This method get the handle of the display.
-			* This method is only compiled on Windows.
-			* @return The handle of the display.
-			*/
-			inline HWND GetHandle() const noexcept { return m_handle; }
-
-			/**
-			* This method get the device context of the display.
-			* This method is only compiled on Windows.
-			* @return The device context of the display.
-			*/
-			inline HDC GetHDC() const noexcept { return m_device_context; }
-
-			/**
-			* This method get the OpenGL device context of the display.
-			* This method is only compiled on Windows.
-			* @return The OpenGL device context of the display.
-			*/
-			inline HGLRC GetHGLRC() const noexcept { return m_gl_device_context; }
-
-			/**
-			* This method get the instance of the program.
-			* This method is only compiled on Windows.
-			* @return The instance of the program.
-			*/
-			inline HINSTANCE GetHINSTANCE() const noexcept { return m_instance; }
-
-		#endif
+		/**
+		* This method return the internal events struct.
+		* @return DisplayEvents& The events structure
+		*/
+		DisplayEvents & GetEvents() noexcept 
+		{
+			return m_events;
+		}
 	};
 }

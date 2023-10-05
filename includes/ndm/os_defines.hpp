@@ -30,3 +30,17 @@
     inline BOOL CALLBACK Win32MonitorProcess(HMONITOR hMon, HDC hdc, LPRECT lprcMonitor, LPARAM pData);
     inline LRESULT CALLBACK Win32ProcessEvent(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
 #endif
+
+// Windows NativeAttributes structure
+#if defined(_WIN32) || defined(_WIN64)
+    struct NativeAttributes
+    {
+        HWND handle;
+        MSG messages;
+        HDC device_context;
+        HGLRC gl_device_context;
+        HINSTANCE instance;
+    };
+#else
+    struct NativeAttributes {};
+#endif

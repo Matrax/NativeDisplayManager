@@ -40,21 +40,21 @@ namespace NativeDisplayManager
 			throw std::runtime_error("Can't load a window that is already loaded !");
 
 		// Get HINSTANCE
-		m_instance = GetModuleHandle(nullptr);
-		if (m_instance == nullptr)
+		m_native_attributes.instance = GetModuleHandle(nullptr);
+		if (m_native_attributes.instance == nullptr)
 			throw std::runtime_error("Can't retrieve the HINSTANCE of the application !");
 
 		WNDCLASSEX window_class = {};
 		SecureZeroMemory(&window_class, sizeof(WNDCLASSEX));
 
-		if(GetClassInfoEx(m_instance, TEXT("NativeDisplayManagerClass"), &window_class) == 0)
+		if(GetClassInfoEx(m_native_attributes.instance, TEXT("NativeDisplayManagerClass"), &window_class) == 0)
 		{
 			// Register Win32 class
 			
 			window_class.lpszClassName = TEXT("NativeDisplayManagerClass");
 			window_class.cbSize = sizeof(WNDCLASSEX);
 			window_class.lpfnWndProc = Win32ProcessEvent;
-			window_class.hInstance = m_instance;
+			window_class.hInstance = m_native_attributes.instance;
 			window_class.hbrBackground = (HBRUSH)(1 + COLOR_WINDOW);
 			window_class.style = CS_OWNDC;
 			window_class.hCursor = LoadCursor(NULL, IDC_ARROW);
@@ -65,24 +65,25 @@ namespace NativeDisplayManager
 		}
 
 		// Create the window
-		m_handle = CreateWindowEx(0, TEXT("NativeDisplayManagerClass"), TEXT("Application"),
-								WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
+		m_native_attributes.handle = CreateWindowEx(0, TEXT("NativeDisplayManagerClass"), TEXT("Application"),
+								WS_OVERLAPPEDWINDOW, 
+								CW_USEDEFAULT, CW_USEDEFAULT,
 								width, height,
-								nullptr, nullptr, m_instance, nullptr);
+								nullptr, nullptr, m_native_attributes.instance, nullptr);
 
-		if (m_handle == nullptr)
+		if (m_native_attributes.handle == nullptr)
 			throw std::runtime_error("Error on create the window !");
 
 		// Set USERDATA of the window handle to retrieve the display pointer in the window procedure.
-		SetWindowLongPtr(m_handle, GWLP_USERDATA, (LONG_PTR) this);
+		SetWindowLongPtr(m_native_attributes.handle, GWLP_USERDATA, (LONG_PTR) this);
 
 		// Clear structs
 		SecureZeroMemory(&m_events, sizeof(DisplayEvents));
-		SecureZeroMemory(&m_messages, sizeof(MSG));
+		SecureZeroMemory(&m_native_attributes.messages, sizeof(MSG));
 
 		// Get the device context
-		m_device_context = GetDC(m_handle);
-		if (m_device_context == nullptr)
+		m_native_attributes.device_context = GetDC(m_native_attributes.handle);
+		if (m_native_attributes.device_context == nullptr)
 			throw std::runtime_error("Can't get the device context !");
 
 		// If visible
@@ -101,7 +102,7 @@ namespace NativeDisplayManager
 
 		if(fullscreen == true)
 		{
-			HMONITOR monitor = MonitorFromWindow(m_handle, MONITOR_DEFAULTTOPRIMARY);
+			HMONITOR monitor = MonitorFromWindow(m_native_attributes.handle, MONITOR_DEFAULTTOPRIMARY);
 			if(monitor == nullptr)
 				throw std::runtime_error("Can't get any monitor !");
 
@@ -111,17 +112,27 @@ namespace NativeDisplayManager
 			if(GetMonitorInfo(monitor, &monitor_info) == FALSE)
 				throw std::runtime_error("Can't get the primary monitor informations !");
 
-			SetWindowLongPtr(m_handle, GWL_STYLE, WS_POPUP);
-			SetWindowPos(m_handle, HWND_TOP, 0, 0, monitor_info.rcMonitor.right, monitor_info.rcMonitor.bottom, SWP_SHOWWINDOW);
+			SetWindowLongPtr(m_native_attributes.handle, GWL_STYLE, WS_POPUP);
+			SetWindowPos(m_native_attributes.handle, HWND_TOP, 0, 0, monitor_info.rcMonitor.right, monitor_info.rcMonitor.bottom, SWP_SHOWWINDOW);
 		} else {
-			SetWindowLongPtr(m_handle, GWL_STYLE, WS_OVERLAPPEDWINDOW);
-			SetWindowPos(m_handle, HWND_BOTTOM, 100, 100, 900, 600, SWP_SHOWWINDOW);
+			SetWindowLongPtr(m_native_attributes.handle, GWL_STYLE, WS_OVERLAPPEDWINDOW);
+			SetWindowPos(m_native_attributes.handle, HWND_BOTTOM, 100, 100, 900, 600, SWP_SHOWWINDOW);
 		}
 	}
 
 	bool Display::HasFocus() const
 	{
-		return GetActiveWindow() == m_handle;
+		return GetActiveWindow() == m_native_attributes.handle;
+	}
+
+	void Display::SetResizableByUser(const bool resizable) noexcept
+	{
+		if(resizable == true)
+			SetWindowLongPtr(m_native_attributes.handle, GWL_STYLE, WS_OVERLAPPEDWINDOW);
+		else
+			SetWindowLongPtr(m_native_attributes.handle, GWL_STYLE, WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU);
+
+		SetWindowPos(m_native_attributes.handle, HWND_TOPMOST, GetX(), GetY(), GetWidth(), GetHeight(), SWP_SHOWWINDOW);
 	}
 
 	// Get the events of the window
@@ -131,13 +142,13 @@ namespace NativeDisplayManager
 		ClearEvents();
 
 		// Clear messages
-		SecureZeroMemory(&m_messages, sizeof(MSG));
+		SecureZeroMemory(&m_native_attributes.messages, sizeof(MSG));
 
 		// While there are windows messages, we dipatch them
-		while (PeekMessage(&m_messages, m_handle, 0, 0, PM_REMOVE))
+		while (PeekMessage(&m_native_attributes.messages, m_native_attributes.handle, 0, 0, PM_REMOVE))
 		{
-			TranslateMessage(&m_messages);
-			DispatchMessage(&m_messages);
+			TranslateMessage(&m_native_attributes.messages);
+			DispatchMessage(&m_native_attributes.messages);
 		}
 
 		return m_events;
@@ -145,14 +156,14 @@ namespace NativeDisplayManager
 
 	void Display::SwapFrontAndBack(const int swap_interval) const noexcept
 	{
-		if (m_loaded == true && m_device_context != nullptr)
+		if (m_loaded == true && m_native_attributes.device_context != nullptr)
 		{
 			// Set the swap interval
 			if (wglSwapIntervalEXT != nullptr)
 				wglSwapIntervalEXT(swap_interval);
 
 			// Swap the back and front
-			SwapBuffers(m_device_context);
+			SwapBuffers(m_native_attributes.device_context);
 		}
 	}
 
@@ -171,7 +182,7 @@ namespace NativeDisplayManager
 		SecureZeroMemory(&fake_window_class, sizeof(WNDCLASSEX));
 		fake_window_class.lpszClassName = TEXT("FakeWindow");
 		fake_window_class.lpfnWndProc = Win32ProcessEvent;
-		fake_window_class.hInstance = m_instance;
+		fake_window_class.hInstance = m_native_attributes.instance;
 		fake_window_class.cbSize = sizeof(WNDCLASSEX);
 		fake_window_class.hbrBackground = (HBRUSH)(1 + COLOR_WINDOW);
 		fake_window_class.style = CS_OWNDC | CS_VREDRAW | CS_HREDRAW;
@@ -186,7 +197,7 @@ namespace NativeDisplayManager
 									0, 0,
 									1, 1,
 									nullptr, nullptr,
-									m_instance, nullptr);
+									m_native_attributes.instance, nullptr);
 
 		fake_device_context = GetDC(fake_handle);
 		if (fake_device_context == nullptr)
@@ -242,7 +253,7 @@ namespace NativeDisplayManager
 			throw std::runtime_error("Can't destroy the fake window !");
 
 		// Unregister the fake class
-		if (UnregisterClass(L"FakeWindow", m_instance) == 0)
+		if (UnregisterClass(L"FakeWindow", m_native_attributes.instance) == 0)
 			throw std::runtime_error("Error on unregister the fake window !");
 
 		// Check if the functions are here
@@ -276,32 +287,32 @@ namespace NativeDisplayManager
 
 		int pixel_format = -1;
 		unsigned int number_of_formats = 0;
-		if (wglChoosePixelFormatARB(m_device_context, pixel_format_attributes, nullptr, 1, &pixel_format, &number_of_formats) == FALSE)
+		if (wglChoosePixelFormatARB(m_native_attributes.device_context, pixel_format_attributes, nullptr, 1, &pixel_format, &number_of_formats) == FALSE)
 			throw std::runtime_error("Can't set the pixel format !");
 
 		PIXELFORMATDESCRIPTOR pixel_format_descriptor = {};
 		SecureZeroMemory(&pixel_format_descriptor, sizeof(PIXELFORMATDESCRIPTOR));
-		if (DescribePixelFormat(m_device_context, pixel_format, sizeof(PIXELFORMATDESCRIPTOR), &pixel_format_descriptor) == 0)
+		if (DescribePixelFormat(m_native_attributes.device_context, pixel_format, sizeof(PIXELFORMATDESCRIPTOR), &pixel_format_descriptor) == 0)
 			throw std::runtime_error("Can't describe the pixel format !");
 
-		if (SetPixelFormat(m_device_context, pixel_format, &pixel_format_descriptor) == false)
+		if (SetPixelFormat(m_native_attributes.device_context, pixel_format, &pixel_format_descriptor) == false)
 			throw std::runtime_error("Can't set the pixel format !");
 
-		m_gl_device_context = wglCreateContextAttribsARB(m_device_context, nullptr, context_attributes);
-		if (m_gl_device_context == nullptr)
+		m_native_attributes.gl_device_context = wglCreateContextAttribsARB(m_native_attributes.device_context, nullptr, context_attributes);
+		if (m_native_attributes.gl_device_context == nullptr)
 			throw std::runtime_error("Can't create the OpenGL context !");
 
-		if (wglMakeCurrent(m_device_context, m_gl_device_context) == FALSE)
+		if (wglMakeCurrent(m_native_attributes.device_context, m_native_attributes.gl_device_context) == FALSE)
 			throw std::runtime_error("Can't make the OpenGL context !");
 	}
 
 	void Display::DeleteOpenGLContext() const
 	{
 		// Delete the GL context
-		if (m_gl_device_context == nullptr)
+		if (m_native_attributes.gl_device_context == nullptr)
 			throw std::runtime_error("There is no OpenGL context active !");
 
-		if (wglDeleteContext(m_gl_device_context) == FALSE)
+		if (wglDeleteContext(m_native_attributes.gl_device_context) == FALSE)
 			throw std::runtime_error("Can't delete the OpenGL Context");
 
 		// Make the current context null
@@ -325,31 +336,31 @@ namespace NativeDisplayManager
 		std::string new_title = std::string(title);
 		#endif
 
-		if (SetWindowText(m_handle, new_title.c_str()) == false)
+		if (SetWindowText(m_native_attributes.handle, new_title.c_str()) == false)
 			throw std::runtime_error("Can't set the title of the window !");
 	}
 
 	void Display::SetX(const int x)
 	{
-		if (SetWindowPos(m_handle, nullptr, x, GetY(), 0, 0, SWP_NOSIZE | SWP_NOREDRAW | SWP_NOSENDCHANGING | SWP_NOZORDER) == FALSE)
+		if (SetWindowPos(m_native_attributes.handle, nullptr, x, GetY(), 0, 0, SWP_NOSIZE | SWP_NOREDRAW | SWP_NOSENDCHANGING | SWP_NOZORDER) == FALSE)
 			throw std::runtime_error("Can't move the window !");
 	}
 
 	void Display::SetY(const int y)
 	{
-		if (SetWindowPos(m_handle, nullptr, GetX(), y, 0, 0, SWP_NOSIZE | SWP_NOREDRAW | SWP_NOSENDCHANGING | SWP_NOZORDER) == FALSE)
+		if (SetWindowPos(m_native_attributes.handle, nullptr, GetX(), y, 0, 0, SWP_NOSIZE | SWP_NOREDRAW | SWP_NOSENDCHANGING | SWP_NOZORDER) == FALSE)
 			throw std::runtime_error("Can't move the window !");
 	}
 
 	void Display::SetWidth(const int width)
 	{
-		if (SetWindowPos(m_handle, nullptr, 0, 0, width, GetHeight(), SWP_NOMOVE | SWP_NOREDRAW | SWP_NOSENDCHANGING | SWP_NOZORDER) == FALSE)
+		if (SetWindowPos(m_native_attributes.handle, nullptr, 0, 0, width, GetHeight(), SWP_NOMOVE | SWP_NOREDRAW | SWP_NOSENDCHANGING | SWP_NOZORDER) == FALSE)
 			throw std::runtime_error("Can't move the window !");
 	}
 
 	void Display::SetHeight(const int height)
 	{
-		if (SetWindowPos(m_handle, nullptr, 0, 0, GetWidth(), height, SWP_NOMOVE | SWP_NOREDRAW | SWP_NOSENDCHANGING | SWP_NOZORDER) == FALSE)
+		if (SetWindowPos(m_native_attributes.handle, nullptr, 0, 0, GetWidth(), height, SWP_NOMOVE | SWP_NOREDRAW | SWP_NOSENDCHANGING | SWP_NOZORDER) == FALSE)
 			throw std::runtime_error("Can't move the window !");
 	}
 
@@ -360,7 +371,7 @@ namespace NativeDisplayManager
 
 		RECT rect = { 0, 0, 0, 0 };
 
-		if (GetWindowRect(m_handle, &rect) == FALSE)
+		if (GetWindowRect(m_native_attributes.handle, &rect) == FALSE)
 			throw std::runtime_error("Can't get the width of the window !");
 
 		return rect.left;
@@ -373,7 +384,7 @@ namespace NativeDisplayManager
 
 		RECT rect = { 0, 0, 0, 0 };
 
-		if (GetWindowRect(m_handle, &rect) == FALSE)
+		if (GetWindowRect(m_native_attributes.handle, &rect) == FALSE)
 			throw std::runtime_error("Can't get the height of the window !");
 
 		return rect.bottom;
@@ -386,7 +397,7 @@ namespace NativeDisplayManager
 
 		RECT rect = { 0, 0, 0, 0 };
 
-		if (GetWindowRect(m_handle, &rect) == FALSE)
+		if (GetWindowRect(m_native_attributes.handle, &rect) == FALSE)
 			throw std::runtime_error("Can't get the width of the window !");
 
 		return rect.right - rect.left;
@@ -399,7 +410,7 @@ namespace NativeDisplayManager
 
 		RECT rect = { 0, 0, 0, 0 };
 
-		if (GetWindowRect(m_handle, &rect) == FALSE)
+		if (GetWindowRect(m_native_attributes.handle, &rect) == FALSE)
 			throw std::runtime_error("Can't get the height of the window !");
 
 		return rect.bottom - rect.top;
@@ -431,20 +442,20 @@ namespace NativeDisplayManager
 
 	void Display::Close() const 
 	{ 
-		if(m_handle == nullptr)
+		if(m_native_attributes.handle == nullptr)
 			throw std::runtime_error("There is no display on the screen !");
 
 		if(m_events.closed == false)
-			DestroyWindow(m_handle);
+			DestroyWindow(m_native_attributes.handle);
 	}
 
     void Display::SetVisible(const bool visible) 
 	{ 
 		if(visible == true)
 		{
-			ShowWindow(m_handle, SW_SHOW);
+			ShowWindow(m_native_attributes.handle, SW_SHOW);
 		} else {
-			ShowWindow(m_handle, SW_HIDE);
+			ShowWindow(m_native_attributes.handle, SW_HIDE);
 		}
 	}
 
