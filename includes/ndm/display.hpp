@@ -28,11 +28,21 @@ namespace NativeDisplayManager
 		bool language_changed;
 	};
 
+	/*
+	* Enumeration that represent the profile used for the creation of an OpenGL context
+	*/
+	enum class GLContextProfile
+	{
+		CORE_PROFILE,
+		COMPATIBILITY_PROFILE
+	};
+
 	/**
 	* This structure describe the paramaters to create of an OpenGL context for the current thread.
 	*/
 	struct GLContextParams
 	{
+		GLContextProfile profile;
 		int major_version;
 		int minor_version;
 		int color_bits;  	    
@@ -120,7 +130,7 @@ namespace NativeDisplayManager
 		* @param width The width of the display on the screen.
 		* @param height The height of the display on the screen.
 		*/
-		void Load(const std::string_view title, const int width, const int height, const bool visible = false);
+		void Load(const std::string_view title, const int width, const int height, const bool visible);
 
 		/**
 		* This method unload the display by releasing all the associated resources.

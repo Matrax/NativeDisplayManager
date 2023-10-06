@@ -1,20 +1,29 @@
 #CMake version
 cmake_minimum_required(VERSION 3.20)
 
-# options
+# Options
 option(BUILD_TESTS "Build the tests" OFF)
+set(LINUX_API "XLIB")
 
-# NativeDisplayManager variables
+# NativeDisplayManager library name and version
 set(NDM_LIB_NAME "NativeDisplayManager")
 set(NDM_LIB_VERSION 1.0)
+
+# Includes directory
 set(NDM_INCLUDES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/includes")
 
-# Win32 variables
-set(NDM_WIN32_SOURCES "sources/win32_display_impl.cpp" 
-                      "sources/win32_monitor_impl.cpp")
-set(NDM_WIN32_LIBRARIES "opengl32.lib" 
-                        "Gdi32.lib")
-set(NDM_WIN32_TESTS "tests/win32_opengl_test.cpp")
+# Sources, libraries and tests files
+if (WIN32)
+    set(NDM_SOURCES "sources/win32_display_impl.cpp" "sources/win32_monitor_impl.cpp")
+    set(NDM_LIBRARIES "opengl32.lib" "Gdi32.lib")
+    set(NDM_TESTS "tests/win32_opengl_test.cpp")
+elseif(LINUX)
+    if(${LINUX_API} STREQUAL "XLIB")
+        set(NDM_SOURCES "sources/xlib_display_impl.cpp" "sources/xlib_monitor_impl.cpp")
+        set(NDM_LIBRARIES "X11")
+        set(NDM_TESTS "tests/xlib_opengl_test.cpp")
+    endif()
+endif()
 
 # Project
 project(${NDM_LIB_NAME}
@@ -23,25 +32,20 @@ project(${NDM_LIB_NAME}
         HOMEPAGE_URL "https://github.com/Matrax/NativeDisplayManager"
         LANGUAGES CXX)
 
-# If Windows
-if (WIN32)
+# Create the library
+add_library(${NDM_LIB_NAME} STATIC ${NDM_SOURCES})
 
-    # Create Win32 library
-    add_library(${NDM_LIB_NAME} STATIC ${NDM_WIN32_SOURCES})
+# C++ properties
+target_compile_features(NativeDisplayManager PUBLIC cxx_std_17)
 
-    # C++ properties
-    target_compile_features(NativeDisplayManager PUBLIC cxx_std_17)
+# link libraries
+target_link_libraries(${NDM_LIB_NAME} PUBLIC ${NDM_LIBRARIES})
 
-    # link libraries
-    target_link_libraries(${NDM_LIB_NAME} PUBLIC ${NDM_WIN32_LIBRARIES})
+# include directories
+target_include_directories(${NDM_LIB_NAME} PUBLIC ${NDM_INCLUDES_DIR})
 
-    # include directories
-    target_include_directories(${NDM_LIB_NAME} PUBLIC ${NDM_INCLUDES_DIR})
-
-    # Compile test
-    if(BUILD_TESTS)
-        add_executable(ndm_win32_test ${NDM_WIN32_TESTS})
-        target_link_libraries(ndm_win32_test ${NDM_LIB_NAME})
-    endif()
-
-endif (WIN32)
+# Compile test
+if(BUILD_TESTS)
+    add_executable(ndm_test ${NDM_TESTS})
+    target_link_libraries(ndm_test ${NDM_LIB_NAME})
+endif()

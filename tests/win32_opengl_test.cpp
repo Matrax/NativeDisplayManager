@@ -1,3 +1,6 @@
+// Only compile on Windows (x32 or x64)
+#if defined(_WIN32) || defined(_WIN64)
+
 // NativeDisplayManager includes
 #include <ndm/display.hpp>
 #include <ndm/monitor.hpp>
@@ -110,3 +113,5 @@ int main()
 
 	return EXIT_SUCCESS;
 }
+
+#endif
