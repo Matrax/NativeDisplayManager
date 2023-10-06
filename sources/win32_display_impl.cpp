@@ -287,6 +287,7 @@ namespace NativeDisplayManager
 		{
 			0x2091, params.major_version, // WGL_CONTEXT_MAJOR_VERSION_ARB 0x2091
 			0x2092, params.minor_version, // WGL_CONTEXT_MINOR_VERSION_ARB 0x2092
+			0x2094, 
 			0x9126, context_profile, // WGL_CONTEXT_PROFILE_MASK_ARB 0x9126
 			0
 		};

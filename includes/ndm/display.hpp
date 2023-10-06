@@ -6,6 +6,7 @@
 #include <string_view>
 #include <exception>
 #include <vector>
+#include <cstring>
 
 // NDM includes
 #include <ndm/os_defines.hpp>
@@ -29,7 +30,8 @@ namespace NativeDisplayManager
 	};
 
 	/*
-	* Enumeration that represent the profile used for the creation of an OpenGL context
+	* Enumeration that represent the profile used for the creation of an OpenGL context.
+	* There are two types of context : core and compability.
 	*/
 	enum class GLContextProfile
 	{
@@ -76,9 +78,10 @@ namespace NativeDisplayManager
 		* Constructor of this class.
 		* This class is a singleton so if a display already exist, an exception is thrown. If not, the global instance is set.
 		*/
-		Display() : 
-			m_loaded(false) 
-		{}
+		Display() : m_loaded(false) 
+		{
+			memset(&m_events, 0, sizeof(m_events));
+		}
 
 		/**
 		* No copy constructor 

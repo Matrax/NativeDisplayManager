@@ -1,3 +1,6 @@
+// Only compile on Linux
+#if defined(_WIN32) || defined(_WIN64)
+
 #include <ndm/display.hpp>
 
 int main()
@@ -12,4 +15,6 @@ int main()
     }
 
     display.Unload();
+
+    return EXIT_SUCCESS;
 }
