@@ -141,9 +141,6 @@ namespace NativeDisplayManager
 		// Clear events
 		ClearEvents();
 
-		// Clear messages
-		SecureZeroMemory(&m_native_attributes.messages, sizeof(MSG));
-
 		// While there are windows messages, we dipatch them
 		while (PeekMessage(&m_native_attributes.messages, m_native_attributes.handle, 0, 0, PM_REMOVE))
 		{
@@ -278,16 +275,21 @@ namespace NativeDisplayManager
 		};
 
 		// Set context profile
-		int context_profile = 0x00000001; // Default profile : WGL_CONTEXT_CORE_PROFILE_BIT_ARB
+		int context_profile = 0x00000001; // WGL_CONTEXT_CORE_PROFILE_BIT_ARB
 		if(params.profile == NativeDisplayManager::GLContextProfile::COMPATIBILITY_PROFILE)
 			context_profile = 0x00000002; // WGL_CONTEXT_COMPABILITY_PROFILE_BIT_ARB
+
+		// Flags
+		int flags = 0;
+		if(params.debug_mode == true) 
+			flags = flags | 0x0001;
 		
 		// Set context attributes array
 		const int context_attributes[] =
 		{
 			0x2091, params.major_version, // WGL_CONTEXT_MAJOR_VERSION_ARB 0x2091
 			0x2092, params.minor_version, // WGL_CONTEXT_MINOR_VERSION_ARB 0x2092
-			0x2094, 
+			0x2094, flags, // WGL_CONTEXT_FLAGS_ARB 0x2094
 			0x9126, context_profile, // WGL_CONTEXT_PROFILE_MASK_ARB 0x9126
 			0
 		};

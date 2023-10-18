@@ -1,5 +1,5 @@
 // Only compile on Linux
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(__linux__)
 
 #include <ndm/display.hpp>
 
@@ -18,3 +18,5 @@ int main()
 
     return EXIT_SUCCESS;
 }
+
+#endif

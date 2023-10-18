@@ -37,6 +37,8 @@ int main()
 
 		// Make the current thread an OpenGL context
 		NativeDisplayManager::GLContextParams params;
+		params.profile = NativeDisplayManager::GLContextProfile::CORE_PROFILE;
+		params.debug_mode = false;
 		params.major_version = 4;
 		params.minor_version = 6;
 		params.double_buffer = true;
@@ -91,13 +93,11 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 		display.SwapFrontAndBack(1);
 
-		// Key tests
-
 		// Check window closed
 		if (events.closed == true || events_2.closed == true)
 		{
 			running = false;
-			std::cout << "Closed" << std::endl;
+			std::cout << "closed" << std::endl;
 		}
 		
 	}

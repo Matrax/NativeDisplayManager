@@ -6,11 +6,9 @@
 	#ifndef WIN32_LEAN_AND_MEAN
 	    #define WIN32_LEAN_AND_MEAN
 	#endif
-
 	#ifndef UNICODE
 	    #define UNICODE
 	#endif
-
     #include <Windows.h>
 
     typedef HGLRC(WINAPI* PFNWGLCREATECONTEXTATTRIBSARBPROC) (HDC hDC, HGLRC hShareContext, const int* attribList);
@@ -50,5 +48,3 @@
     };
 
 #endif
-
-#include <iostream>

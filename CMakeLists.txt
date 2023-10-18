@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.20)
 
 # Options
 option(BUILD_TESTS "Build the tests" OFF)
+
+# Linux API
 set(LINUX_API "XLIB")
 
 # NativeDisplayManager library name and version

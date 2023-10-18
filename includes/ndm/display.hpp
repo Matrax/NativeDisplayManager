@@ -1,12 +1,12 @@
 #pragma once
 
 // STD includes
-#include <iostream>
 #include <string>
 #include <string_view>
 #include <exception>
 #include <vector>
 #include <cstring>
+#include <stdexcept>
 
 // NDM includes
 #include <ndm/os_defines.hpp>
@@ -52,6 +52,7 @@ namespace NativeDisplayManager
 		int depth_bits; 
 		int stencil_bits; 
 		int samples;
+		bool debug_mode;
 		bool double_buffer;
 		bool samples_buffers;
 	};
