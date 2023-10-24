@@ -1,13 +1,13 @@
 // Only compile on Windows (x32 or x64)
 #if defined(_WIN32) || defined(_WIN64)
 
-// NativeDisplayManager includes
+// ndm includes
 #include <ndm/monitor.hpp>
 
 BOOL CALLBACK Win32MonitorProcess(HMONITOR hMon, HDC hdc, LPRECT lprcMonitor, LPARAM pData)
 {	
     // Retrieve vector pointer
-    std::vector<NativeDisplayManager::MonitorInfo> * monitors = (std::vector<NativeDisplayManager::MonitorInfo> *) pData;
+    std::vector<ndm::Monitor> * monitors = (std::vector<ndm::Monitor> *) pData;
 
     // Get monitor info
     MONITORINFOEX monitor_info = {};
@@ -17,30 +17,33 @@ BOOL CALLBACK Win32MonitorProcess(HMONITOR hMon, HDC hdc, LPRECT lprcMonitor, LP
     // Get device name
     const char * device_name = (const char * ) monitor_info.szDevice;
 
-    // Fil the result structure
-    NativeDisplayManager::MonitorInfo info = {};
-    info.name = std::string(device_name);
-    info.width = lprcMonitor->right - lprcMonitor->left;
-    info.height = lprcMonitor->bottom - lprcMonitor->top;
-    info.primary = false;
-
-    if(monitor_info.dwFlags == MONITORINFOF_PRIMARY)
-        info.primary = true;
-
     // Put in the vector
-    monitors->push_back(info);
+    unsigned int x = lprcMonitor->left;
+    unsigned int y = lprcMonitor->top;
+    unsigned int width = lprcMonitor->right - lprcMonitor->left;
+    unsigned int height = lprcMonitor->bottom - lprcMonitor->top;
+    bool is_primary = (monitor_info.dwFlags == MONITORINFOF_PRIMARY);
+    monitors->emplace_back(device_name, x, y, width, height, is_primary);
 
     return TRUE;
 }
 
-void NativeDisplayManager::RetrieveMonitors(std::vector<MonitorInfo> & monitors)
+ndm::Monitor::Monitor(std::string_view name, unsigned int x, unsigned int y, unsigned int width, unsigned int height, bool is_primary) :
+    m_name(name),
+    m_x(x),
+    m_y(y),
+    m_width(width),
+    m_height(height),
+    m_is_primary(is_primary)
+{}
+
+ndm::NDMResult ndm::Monitor::RetrieveMonitors(std::vector<Monitor> & monitors)
 {
     monitors.clear();
 
-    if(EnumDisplayMonitors(NULL, NULL, Win32MonitorProcess, (LPARAM) &monitors) == 0)
-        throw std::runtime_error("Can't retrieve all the monitors !");
+    EnumDisplayMonitors(NULL, NULL, Win32MonitorProcess, (LPARAM) &monitors);
 
-    monitors.shrink_to_fit();
+    return ndm::NDMResult::NDM_OK;
 }
 
 #endif

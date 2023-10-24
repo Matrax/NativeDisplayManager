@@ -3,7 +3,7 @@
 
 #include <ndm/display.hpp>
 
-namespace NativeDisplayManager
+namespace ndm
 {
     void Display::Load(const std::string_view title, const int width, const int height, const bool visible = false)
     {
@@ -34,9 +34,6 @@ namespace NativeDisplayManager
 
     DisplayEvents & Display::CatchEvents() noexcept
     {
-        // Clear events
-		ClearEvents();
-
         // Get all the events
         XNextEvent(m_native_attributes.display, &m_native_attributes.events);
 
