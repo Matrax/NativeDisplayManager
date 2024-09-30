@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\includes",
+    "\\includes\\ndm",
+    "\\includes\\ndm\\monitor",
+    "\\includes\\ndm\\opengl",
+    "\\includes\\ndm\\os",
+    "\\sources",
+    "\\sources\\display",
+    "\\sources\\monitor",
+    "\\sources\\opengl"
+  ],
+  "SelectedNode": "\\includes\\ndm\\os\\win32_functions.hpp",
+  "PreviewInSolutionExplorer": false
+}

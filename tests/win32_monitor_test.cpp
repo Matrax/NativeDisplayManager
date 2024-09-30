@@ -1,8 +1,8 @@
 // Only compile on Windows (x32 or x64)
 #if defined(_WIN32) || defined(_WIN64)
 
-// ndm includes
-#include <ndm/monitor.hpp>
+// NDM includes
+#include <ndm/monitor/monitor.hpp>
 
 // STD includes
 #include <iostream>
@@ -10,10 +10,8 @@
 // Main
 int main()
 {
-	// Retrieve monitors
-	std::vector<ndm::Monitor> monitors;
-	if(ndm::Monitor::RetrieveMonitors(monitors) == ndm::NDMResult::NDM_MONITOR_ERROR)
-		std::cerr << "Can't retrieve all the monitors !" << std::endl;
+	// Retrieve all monitors
+	std::vector<ndm::Monitor> monitors = ndm::Monitor::get_all_monitors();
 
 	// Show info of all monitors
 	std::cout << monitors.size() << " monitor(s) founded" << std::endl;
@@ -21,10 +19,12 @@ int main()
 	{
 		std::cout << "==================" << std::endl;
 		std::cout << "Monitor " << i << std::endl;
-		std::cout << "name: " << monitors[i].GetName() << std::endl;
-		std::cout << "width: " << monitors[i].GetWidth() << std::endl;
-		std::cout << "height: " << monitors[i].GetHeight() << std::endl;
-		std::cout << "primary: " << monitors[i].IsPrimary() << std::endl;
+		std::cout << "name: " << monitors[i].get_name() << std::endl;
+		std::cout << "min size: " << std::get<0>(monitors[i].get_min_size()) << "x" << std::get<1>(monitors[i].get_min_size()) << std::endl;
+		std::cout << "max size: " << std::get<0>(monitors[i].get_max_size()) << "x" << std::get<1>(monitors[i].get_max_size()) << std::endl;
+		std::cout << "min refresh rate: " << monitors[i].get_min_refresh_rate() << std::endl;
+		std::cout << "max refresh rate: " << monitors[i].get_max_refresh_rate() << std::endl;
+		std::cout << "primary: " << monitors[i].is_primary() << std::endl;
 	}
 	std::cout << "==================" << std::endl;
 

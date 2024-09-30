@@ -1,0 +1,51 @@
+{
+    "fock-project": 
+    {
+        "name": "win32-monitor-test",
+        "description": "Description",
+        "version": [1, 0, 0],
+        "authors": ["Matrax"],
+        "build-directory": "build"
+    },
+
+    "cpp" : 
+    {
+      "sources": [
+        "sources/monitor/win32_monitor_impl.cpp",
+        "tests/win32_monitor_test.cpp"
+      ],
+        "modules": [],
+        "libraries": ["Gdi32.lib", "User32.lib"],
+        "library-directories": [],
+        "include-directories": ["includes"],
+        "build-type": "EXECUTABLE"
+    },
+
+    "msvc":
+    {
+      "compiler-parameters": [
+        "/EHsc",
+        "/std:c++latest",
+        "/O2",
+        "/nologo",
+        "/MP",
+        "/W4"
+      ],
+        "linker-parameters": ["/nologo"],
+        "lib-parameters": ["/nologo"]
+    },
+
+    "gcc":
+    {
+        "compiler-parameters": [""],
+        "linker-parameters": [""]
+    },
+
+    "clang":
+    {
+        "compiler-parameters": [""],
+        "linker-parameters": [""]
+    },
+
+    "fock-version": [1, 0, 0]
+}

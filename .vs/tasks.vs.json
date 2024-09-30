@@ -1,0 +1,31 @@
+{
+  "version": "0.2.1",
+  "tasks": [
+    {
+      "taskLabel": "FockBuild",
+      "appliesTo": "build-win32-monitor-test.json",
+      "type": "launch",
+      "contextType": "custom",
+      "command": "fockbuild.exe",
+      "args": [
+        "build",
+        "build-win32-monitor-test.json",
+        "cpp",
+        "msvc"
+      ]
+    },
+    {
+      "taskLabel": "FockBuild",
+      "appliesTo": "build-win32-display-test.json",
+      "type": "launch",
+      "contextType": "custom",
+      "command": "fockbuild.exe",
+      "args": [
+        "build",
+        "build-win32-display-test.json",
+        "cpp",
+        "msvc"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+    "fock-project": 
+    {
+        "name": "win32-display-test",
+        "description": "Description",
+        "version": [1, 0, 0],
+        "authors": ["Matrax"],
+        "build-directory": "build"
+    },
+
+    "cpp" : 
+    {
+      "sources": [
+        "sources/display/win32_display_impl.cpp",
+        "sources/opengl/win32_glcontext_impl.cpp",
+        "sources/monitor/win32_monitor_impl.cpp",
+        "tests/win32_display_test.cpp"
+      ],
+        "modules": [],
+      "libraries": [
+        "opengl32.lib",
+        "Gdi32.lib",
+        "User32.lib"
+      ],
+        "library-directories": [],
+        "include-directories": ["includes"],
+        "build-type": "EXECUTABLE"
+    },
+
+    "msvc":
+    {
+      "compiler-parameters": [
+        "/EHsc",
+        "/std:c++latest",
+        "/O2",
+        "/nologo",
+        "/MP",
+        "/W4"
+      ],
+        "linker-parameters": ["/nologo"],
+        "lib-parameters": ["/nologo"]
+    },
+
+    "gcc":
+    {
+        "compiler-parameters": [""],
+        "linker-parameters": [""]
+    },
+
+    "clang":
+    {
+        "compiler-parameters": [""],
+        "linker-parameters": [""]
+    },
+
+    "fock-version": [1, 0, 0]
+}
